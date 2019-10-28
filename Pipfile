@@ -1,0 +1,22 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+keras = "*"
+tensorflow = "*"
+notebook = "*"
+pandas = "*"
+numpy = "*"
+tqdm = "*"
+praw = "*"
+tinydb = "*"
+autopep8 = "*"
+pillow = "*"
+opencv-python = "*"
+
+[requires]
+python_version = "3.7"
