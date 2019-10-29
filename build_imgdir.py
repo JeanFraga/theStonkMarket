@@ -1,7 +1,6 @@
 import shutil
 import subprocess
 import sqlite3
-from sqlite3 import Error
 from tinydb import TinyDB, Query, where
 from urllib.request import urlopen
 from urllib.parse import urlparse
