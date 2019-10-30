@@ -43,7 +43,6 @@ def compile_data(current_table):
         db.cursor().executemany(insert_meme_sql_string.format(current_table), data)
 
 
-# get post contents via PRAW from post id
 def praw_by_id(submission_id):
     try:
         submission = reddit.submission(id=submission_id)
@@ -101,7 +100,6 @@ def initializer():
                          username=reddit_oauth['USERNAME'])
 
 
-# multiprocess praw over ids
 def praw_post_ids(post_ids):
 
     NUM_WORKERS = 8
@@ -113,49 +111,57 @@ def praw_post_ids(post_ids):
     p.join()
 
 
+def init_time_range(current_table, year, month):
+    dt = datetime(year=year, month=month, day=1, hour=0, minute=0)
+    fresh_month_ts = time.mktime(dt.timetuple())
+
+    select_max_timestamp = f'''SELECT MAX(timestamp) FROM {current_table}'''
+    with sqlite3.connect("memes.db") as db:
+        max_db_time = db.cursor().execute(
+            select_max_timestamp).fetchall()[0][0]
+    if not max_db_time:
+        max_db_time = fresh_month_ts
+
+    if month == 12:
+        next_month = 1
+        year += 1
+    else:
+        next_month = month+1
+
+    dt = datetime(year=year, month=next_month, day=1, hour=0, minute=0)
+    next_month_ts = time.mktime(dt.timetuple())
+
+    return max_db_time, next_month_ts
+
+
 def main():
-    current = 0
     step_size = 60*60*24
     year = 2019
     subreddit = 'dankmemes'
+    total = 0
 
-    for i in range(1, 13):
-        table = f'{subreddit}_{year}_{i}'
-        check_table_exists = f"""SELECT name FROM sqlite_master WHERE type='table' AND name='table';"""
+    for month in range(1, 13):
+        current_table = f'{subreddit}_{year}_{month}'
+        check_table_exists = f"""SELECT name FROM sqlite_master WHERE type='table' AND name='{current_table}';"""
+
         with sqlite3.connect("memes.db") as db:
             exists = db.cursor().execute(check_table_exists).fetchall()
         if not exists:
-            create_meme_table(table)
+            create_meme_table(current_table)
 
-    for i in range(1, 13):
-        current_table = f'{subreddit}_{year}_{i}'
-        dt = datetime(year=year, month=i, day=1, hour=0, minute=0)
-        fresh_month_ts = time.mktime(dt.timetuple())
+        max_db_time, next_month = init_time_range(current_table, year, month)
 
-        select_max_timestamp = f'''SELECT MAX(timestamp) FROM {current_table}'''
-        with sqlite3.connect("memes.db") as db:
-            max_timestamp = db.cursor().execute(
-                select_max_timestamp).fetchall()[0][0]
-        if not max_timestamp:
-            max_timestamp = fresh_month_ts
+        while max_db_time < next_month:
+            start_at = int(max_db_time)
+            end_at = int(min(max_db_time + step_size, time.time()))
 
-        if i == 12:
-            next_month = 1
-            year += 1
-        else:
-            next_month = i+1
-
-        dt = datetime(year=year, month=next_month, day=1, hour=0, minute=0)
-        next_month_ts = time.mktime(dt.timetuple())
-
-        while current < next_month_ts:
-            start_at = int(max_timestamp)
-            end_at = int(min(max_timestamp + step_size, time.time()))
-
-            current = end_at
             post_ids = query_pushshift(subreddit, start_at, end_at)
             praw_post_ids(post_ids)
             compile_data(current_table)
+
+            max_db_time = end_at
+            total += len(post_ids)
+            print(f'\n{total} data points have been compiled so far in runtime.\n')
 
 
 if __name__ == "__main__":
