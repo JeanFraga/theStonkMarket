@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3 import Error
 
 
-insert_meme_sql_string = ''' INSERT INTO {}(year, upvotes, upvote_ratio, title, timestamp, num_comments, nsfw, month, minute, meme_text, media, id, hour, filename, downvotes, day, datetime, author) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
+insert_meme_sql_string = ''' INSERT INTO {}(year, upvotes, upvote_ratio, title, timestamp, num_comments, nsfw, month, minute, meme_text, media, id, hour, status, downvotes, day, datetime, author) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
 
 def create_meme_table(name):
@@ -12,7 +12,7 @@ def create_meme_table(name):
                                                                 author TEXT,
                                                                 media TEXT,
                                                                 meme_text TEXT,
-                                                                filename TEXT,
+                                                                status TEXT,
                                                                 timestamp INTEGER,
                                                                 datetime DATETIME,
                                                                 year INTEGER,

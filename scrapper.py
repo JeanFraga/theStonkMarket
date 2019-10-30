@@ -17,23 +17,28 @@ import multiprocessing
 from datetime import datetime, timedelta
 from tinydb import TinyDB
 
-from custom_functions.timeit import timeit
-from custom_functions.pushshift import query_pushshift
-from custom_functions.sql import create_meme_table
-from custom_functions.sql import insert_meme_sql_string
+from functions.timeit import timeit
+from functions.pushshift import query_pushshift
+from functions.sql import create_meme_table
+from functions.sql import insert_meme_sql_string
 
-db_uri = r'db_{}.json'
+subreddit = 'dankmemes'
+year = 2019
+step_size = 60*60*24
+NUM_WORKERS = 8
+
+worker_db_uri = r'worker_dbs/db_{}.json'
 FILE_TYPES = [".jpg", ".jpeg", ".png"]
 
 
 def compile_data(current_table):
-    columns = ['id', 'title', 'author', 'timestamp', 'media', 'meme_text', 'filename', 'datetime', 'year',
+    columns = ['id', 'title', 'author', 'timestamp', 'media', 'meme_text', 'status', 'datetime', 'year',
                'month', 'day', 'hour', 'minute', 'upvote_ratio', 'upvotes', 'downvotes', 'nsfw', 'num_comments']
     cdf = pd.DataFrame(columns=columns)
     for i in range(0, 8):
-        with open(db_uri.format(i), "r") as data:
+        with open(worker_db_uri.format(i), "r") as data:
             json_data = json.load(data)
-        os.remove(db_uri.format(i))
+        os.remove(worker_db_uri.format(i))
 
         df = pd.DataFrame.from_dict(json_data['_default']).transpose()
         cdf = pd.concat([cdf, df], ignore_index=True, axis=0, sort=True)
@@ -55,7 +60,7 @@ def praw_by_id(submission_id):
                     "title": submission.title,
                     "author": str(submission.author),
                     "timestamp": submission.created_utc,
-                    "filename": None,
+                    "status": None,
                     "datetime": datetime.fromtimestamp(submission.created_utc).isoformat(),
                     "year": datetime.fromtimestamp(submission.created_utc).year,
                     "month": datetime.fromtimestamp(submission.created_utc).month,
@@ -82,13 +87,13 @@ def praw_by_id(submission_id):
 
 def initializer():
 
+    global worker_db_uri
     global db
     global reddit
-    global db_uri
 
     worker = (
         int(multiprocessing.current_process().name.split("-", 1)[1])-1) % 8
-    db = TinyDB(db_uri.format(worker))
+    db = TinyDB(worker_db_uri.format(worker))
     if worker in [1, 3, 4, 6, 7]:
         worker = 0
 
@@ -102,9 +107,8 @@ def initializer():
 
 def praw_post_ids(post_ids):
 
-    NUM_WORKERS = 8
+    global NUM_WORKERS
     p = multiprocessing.Pool(NUM_WORKERS, initializer)
-
     # tqdm displays progress bar for multiprocessing
     list(tqdm.tqdm(p.imap_unordered(praw_by_id, post_ids), total=len(post_ids)))
     p.close()
@@ -135,9 +139,9 @@ def init_time_range(current_table, year, month):
 
 
 def main():
-    step_size = 60*60*24
-    year = 2019
-    subreddit = 'dankmemes'
+    global step_size
+    global year
+    global subreddit
     total = 0
 
     for month in range(1, 13):
