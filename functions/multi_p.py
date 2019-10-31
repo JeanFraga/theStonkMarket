@@ -8,7 +8,7 @@ import sqlite3
 worker_db_uri = r'worker_dbs/db_{}.json'
 
 
-def update_db_filename(current_table):
+def update_status_col(current_table):
     cdf = pd.DataFrame(columns=['id', 'status'])
     for i in range(0, 8):
         with open(worker_db_uri.format(i), "r") as data:
