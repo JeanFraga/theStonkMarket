@@ -17,7 +17,7 @@ import tqdm
 import praw
 import multiprocessing
 
-from functions.multi_p import update_status_col
+from functions.workerdb_compilers import update_status_col
 
 
 def download(lst):
@@ -109,7 +109,7 @@ class imgdir_handler:
                 num_chunks = (len(data) // self.chunksize)
 
                 for chunk in np.array_split(data, num_chunks):
-                    
+
                     filelist = [f for f in os.listdir(self.imgdir_path)]
                     if filelist:
                         for f in filelist:

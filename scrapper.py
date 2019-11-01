@@ -20,32 +20,16 @@ from tinydb import TinyDB
 from functions.timeit import timeit
 from functions.pushshift import query_pushshift
 from functions.sql import create_meme_table
-from functions.sql import insert_meme_sql_string
-
-subreddit = 'dankmemes'
-year = 2019
-step_size = 60*60*24
-NUM_WORKERS = 8
+from functions.workerdb_compilers import insert_new_data
 
 worker_db_uri = r'worker_dbs/db_{}.json'
 FILE_TYPES = [".jpg", ".jpeg", ".png"]
+total = 0
 
-
-def compile_data(current_table):
-    columns = ['id', 'title', 'author', 'timestamp', 'media', 'meme_text', 'status', 'datetime', 'year',
-               'month', 'day', 'hour', 'minute', 'upvote_ratio', 'upvotes', 'downvotes', 'nsfw', 'num_comments']
-    cdf = pd.DataFrame(columns=columns)
-    for i in range(0, 8):
-        with open(worker_db_uri.format(i), "r") as data:
-            json_data = json.load(data)
-        os.remove(worker_db_uri.format(i))
-
-        df = pd.DataFrame.from_dict(json_data['_default']).transpose()
-        cdf = pd.concat([cdf, df], ignore_index=True, axis=0, sort=True)
-
-    with sqlite3.connect("memes.db") as db:
-        data = list(cdf.iloc[:, ::-1].itertuples(index=False, name=None))
-        db.cursor().executemany(insert_meme_sql_string.format(current_table), data)
+subreddits = ['dankmemes']
+years = [2019]
+step_size = 60*60*24
+NUM_WORKERS = 8
 
 
 def praw_by_id(submission_id):
@@ -115,7 +99,7 @@ def praw_post_ids(post_ids):
     p.join()
 
 
-def init_time_range(current_table, year, month):
+def set_time_range(current_table, year, month):
     dt = datetime(year=year, month=month, day=1, hour=0, minute=0)
     fresh_month_ts = time.mktime(dt.timetuple())
 
@@ -137,35 +121,40 @@ def init_time_range(current_table, year, month):
 
     return max_db_time, next_month_ts
 
+def scrapper_engine(subreddit, max_db_time, next_month, current_table):
+    global step_size
+    global total
+
+    while max_db_time < next_month:
+        start_at = int(max_db_time)
+        end_at = int(min(max_db_time + step_size, time.time()))
+
+        post_ids = query_pushshift(subreddit, start_at, end_at)
+        praw_post_ids(post_ids)
+        insert_new_data(current_table)
+
+        max_db_time = end_at
+        total += len(post_ids)
+        print(f'\n{total} data points have been compiled so far in runtime.\n')
 
 def main():
-    global step_size
-    global year
-    global subreddit
-    total = 0
+    global years
+    global subreddits
+    for subreddit in subreddits:
+        for year in years:
+            for month in range(1, 13):
+                current_table = f'{subreddit}_{year}_{month}'
+                check_table_exists = f"""SELECT name FROM sqlite_master WHERE type='table' AND name='{current_table}';"""
 
-    for month in range(1, 13):
-        current_table = f'{subreddit}_{year}_{month}'
-        check_table_exists = f"""SELECT name FROM sqlite_master WHERE type='table' AND name='{current_table}';"""
+                with sqlite3.connect("memes.db") as db:
+                    exists = db.cursor().execute(check_table_exists).fetchall()
+                if not exists:
+                    create_meme_table(current_table)
 
-        with sqlite3.connect("memes.db") as db:
-            exists = db.cursor().execute(check_table_exists).fetchall()
-        if not exists:
-            create_meme_table(current_table)
+                max_db_time, next_month = set_time_range(current_table, year, month)
+                scrapper_engine(subreddit, max_db_time, next_month, current_table)
 
-        max_db_time, next_month = init_time_range(current_table, year, month)
-
-        while max_db_time < next_month:
-            start_at = int(max_db_time)
-            end_at = int(min(max_db_time + step_size, time.time()))
-
-            post_ids = query_pushshift(subreddit, start_at, end_at)
-            praw_post_ids(post_ids)
-            compile_data(current_table)
-
-            max_db_time = end_at
-            total += len(post_ids)
-            print(f'\n{total} data points have been compiled so far in runtime.\n')
+        
 
 
 if __name__ == "__main__":
