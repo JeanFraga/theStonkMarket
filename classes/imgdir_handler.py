@@ -19,6 +19,21 @@ import multiprocessing
 
 from functions.workerdb_compilers import update_status_col
 
+def check_isDeleted(output_filename):
+    deleted = cv2.imread('assets/image404.png')
+    deleted_nb = cv2.imread('assets/image404_nb.png')
+    image = cv2.imread(output_filename)
+
+    try:
+        diff = cv2.subtract(image, deleted)
+    except:
+        diff = True
+    try:
+        diff_nb = cv2.subtract(image, deleted_nb)
+    except:
+        diff_nb = True
+
+    return (np.all(diff == 0) | np.all(diff_nb == 0))
 
 def download(lst):
     imgdir_path = 'memes_imgdir'
@@ -30,49 +45,32 @@ def download(lst):
         'id': post_id
     }
 
-    if not os.path.isfile(output_filename):
-        try:
-            with requests.get(post_url) as response, open(output_filename, 'wb') as out_file:
-                i = Image.open(io.BytesIO(response.content))
-                i.save(out_file, format='png')
+    try:
+        with requests.get(post_url) as response, open(output_filename, 'wb') as out_file:
+            i = Image.open(io.BytesIO(response.content))
+            i.save(out_file, format='png')
 
-            deleted = cv2.imread('assets/image404.png')
-            deleted_nb = cv2.imread('assets/image404_nb.png')
-            image = cv2.imread(output_filename)
-
-            try:
-                diff = cv2.subtract(image, deleted)
-            except:
-                diff = True
-            try:
-                diff_nb = cv2.subtract(image, deleted_nb)
-            except:
-                diff_nb = True
-
-            isDeleted = np.all(diff == 0) | np.all(diff_nb == 0)
-
-            if not isDeleted:
-                _data['status'] = output_filename
-                db.insert(_data)
-            else:
-                os.remove(output_filename)
-                _data['status'] = 'deleted'
-                db.insert(_data)
-
-        except:
-            _data['status'] = 'error'
-            db.insert(_data)
+        if check_isDeleted(output_filename):
+            os.remove(output_filename)
+            _data['status'] = 'deleted'
+            worker_db.insert(_data)
+        else:
+            _data['status'] = output_filename
+            worker_db.insert(_data)
+    except:
+        _data['status'] = 'error'
+        worker_db.insert(_data)
 
 
 def initializer():
 
-    global db
+    global worker_db
     worker_db_uri = 'worker_dbs/db_{}.json'
 
-    worker = (
+    worker_id = (
         int(multiprocessing.current_process().name.split("-", 1)[1])-1) % 8
 
-    db = TinyDB(worker_db_uri.format(worker))
+    worker_db = TinyDB(worker_db_uri.format(worker_id))
 
 
 class imgdir_handler:
