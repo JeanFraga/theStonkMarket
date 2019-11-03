@@ -1,6 +1,13 @@
 import sqlite3
 
 
+def get_max_timestamp(current_table):
+    max_ts_str = f'''SELECT MAX(timestamp) FROM {current_table}'''
+    with sqlite3.connect("memes.db") as db:
+        max_db_time = db.cursor().execute(max_ts_str)
+        return max_db_time.fetchall()[0][0]
+
+
 def insert_meme_sql_string(current_table, names_list):
     col_ord_str = str(names_list)[1:-1].replace("'", "")
     return f''' INSERT INTO {current_table}({col_ord_str}) VALUES({','.join(['?']*len(names_list))}) '''
