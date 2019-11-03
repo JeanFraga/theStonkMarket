@@ -17,7 +17,10 @@ import tqdm
 import praw
 import multiprocessing
 
+from keras.preprocessing.image import ImageDataGenerator
+
 from functions.workerdb_compilers import update_status_col
+
 
 def check_isDeleted(output_filename):
     deleted = cv2.imread('assets/image404.png')
@@ -35,8 +38,9 @@ def check_isDeleted(output_filename):
 
     return (np.all(diff == 0) | np.all(diff_nb == 0))
 
+
 def download(lst):
-    imgdir_path = 'memes_imgdir'
+    imgdir_path = 'imgdir'
     post_id, post_url = lst
 
     output_filename = os.path.join(
@@ -78,7 +82,7 @@ class imgdir_handler:
         self.num_workers = 8
 
         self.db_path = "memes.db"
-        self.imgdir_path = 'memes_imgdir'
+        self.imgdir_path = 'imgdir'
 
         self.id_column = 'id'
         self.imgurl_column = 'media'
@@ -93,6 +97,16 @@ class imgdir_handler:
 
     def set_tables(self, table_list):
         self.tables = table_list
+
+
+
+    def imgdata_generator(self):
+        return ImageDataGenerator(rescale=1./255).flow_from_directory(
+            self.imgdir_path,
+            target_size=(150, 150),
+            batch_size=32,
+            class_mode='binary'
+        )
 
     def imgdir_generator(self):
         for table in self.tables:
