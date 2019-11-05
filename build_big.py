@@ -9,8 +9,10 @@ def main():
     global years
     global subreddits
     global months
+
     clear_worker_dbs()
     redditScrapper = RedditScrapper()
+
     for subreddit in subreddits:
         for year in years:
             for month in months:
