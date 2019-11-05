@@ -69,19 +69,19 @@ def download(lst):
 def initializer():
 
     global worker_db
-    worker_db_uri = 'worker_dbs/db_{}.json'
+    WORKER_DB_URI = 'worker_dbs/db_{}.json'
 
     worker_id = (
         int(multiprocessing.current_process().name.split("-", 1)[1])-1) % 8
 
-    worker_db = TinyDB(worker_db_uri.format(worker_id))
+    worker_db = TinyDB(WORKER_DB_URI.format(worker_id))
 
 
 class imgdir_handler:
     def __init__(self, chunksize=100):
-        self.num_workers = 8
+        self.NUM_WORKERS = 8
 
-        self.db_path = "memes.db"
+        self.db_path = os.environ['DB_PATH']
         self.imgdir_path = 'imgdir'
 
         self.id_column = 'id'
@@ -127,7 +127,7 @@ class imgdir_handler:
                         for f in filelist:
                             os.remove(os.path.join(self.imgdir_path, f))
 
-                    p = multiprocessing.Pool(self.num_workers, initializer)
+                    p = multiprocessing.Pool(self.NUM_WORKERS, initializer)
                     list(tqdm.tqdm(p.imap_unordered(
                         download, chunk), total=len(chunk)))
                     p.close()
