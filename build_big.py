@@ -14,9 +14,10 @@ def main():
     redditScrapper = RedditScrapper()
 
     for subreddit in subreddits:
+        redditScrapper.set_current_subreddit(subreddit)
         for year in years:
             for month in months:
-                redditScrapper.scrap_month(subreddit, year, month)
+                redditScrapper.scrap_month(year, month)
 
 
 if __name__ == "__main__": main()
