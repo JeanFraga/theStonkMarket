@@ -4,9 +4,7 @@ from multiprocessing import Manager, Pool, current_process
 from tqdm import tqdm
 from time import time
 
-import pandas as pd
-from numpy import log, e
-
+from functions.dataframe import get_score_df
 from functions.pushshift import query_pushshift
 from functions.praw import extract_data
 from functions.misc import setup_logger, init_reddit
@@ -133,27 +131,4 @@ class RedditScrapper:
         return get_scoring_df(self.current_subreddit, wanted_cols)
 
     def get_latest_scores(self):
-        df = self.get_scoring_data()
-        scoring = df[df['author']!='None']
-        top_1percent = scoring[scoring['upvotes'] > scoring['upvotes'].quantile(0.99)]
-        bottom_99percent = scoring[scoring['upvotes'] < scoring['upvotes'].quantile(0.99)]
-        lowest_upvotes_in_top = top_1percent['upvotes'].min()
-
-        num_memes_in_bottom = (bottom_99percent.groupby('author')
-                                        .apply(len)
-                                        .sort_values(ascending=False))
-        num_memes_in_top = (top_1percent.groupby('author')
-                                        .apply(len)
-                                        .sort_values(ascending=False))
-        highest_upvotes = top_1percent.groupby('author')['upvotes'].max()
-
-        scores_dict = {}
-        for author in list(top_1percent['author']):
-            try:
-                part1 = (num_memes_in_top[author]**1.5/num_memes_in_bottom[author])
-            except:
-                part1 = 2.2*num_memes_in_top[author]**1.5
-            part2 = log(e+(highest_upvotes[author]/lowest_upvotes_in_top))
-            scores_dict[author] = part1 * part2
-
-        return pd.DataFrame.from_dict(scores_dict, orient='index').iloc[:,0].sort_values(ascending=False)
+        return get_score_df(self.get_scoring_data())
