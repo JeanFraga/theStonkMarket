@@ -1,7 +1,5 @@
 /memes_imgdir
-/worker_dbs
-
-*.db
+/databases
 
 ### VisualStudioCode ###
 .vscode/*
