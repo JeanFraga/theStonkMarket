@@ -7,7 +7,7 @@ from time import time
 from functions.dataframe import get_score_df
 from functions.pushshift import query_pushshift
 from functions.praw import extract_data
-from functions.misc import setup_logger, init_reddit
+from functions.misc import setup_logger, init_reddit, check_isDeleted
 from functions.workerdb_compilers import insert_new_data, clear_worker_dbs
 from functions.sql import (get_max_timestamp,
                             check_table_exists,
