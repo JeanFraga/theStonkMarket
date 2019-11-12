@@ -4,29 +4,33 @@ from multiprocessing import Manager, Pool, current_process
 from tqdm import tqdm
 from time import time
 
-from functions.dataframe import get_score_df
-from functions.pushshift import query_pushshift
-from functions.praw import extract_data
-from functions.misc import setup_logger, init_reddit, check_isDeleted
-from functions.workerdb_compilers import insert_new_data, clear_worker_dbs
-from functions.sql import (get_max_timestamp,
-                            check_table_exists,
-                            table_prep,
-                            get_time_range,
-                            get_scoring_df,
-                            remove_duplicates,
-                            del_over_month_old)
-from functions.constants import (MONTH_TD,
-                                WORKER_DB_URI,
-                                FILE_TYPES,
-                                NUM_WORKERS,
-                                DAY_TD,
-                                DEBUG_REDDIT)
+from MMC_API.functions.dataframe import get_score_df
+from MMC_API.functions.pushshift import query_pushshift
+from MMC_API.functions.praw import extract_data
+from MMC_API.functions.utils import setup_logger, init_reddit, check_isDeleted
+from MMC_API.functions.workerdb_compilers import insert_new_data, clear_worker_dbs
+from MMC_API.functions.sql import (
+    get_max_timestamp,
+    check_table_exists,
+    table_prep,
+    get_time_range,
+    get_scoring_df,
+    remove_duplicates,
+    del_over_month_old
+)
+from MMC_API.functions.constants import (
+    MONTH_TD,
+    WORKER_DB_URI,
+    IMG_FILE_TYPES,
+    NUM_WORKERS,
+    DAY_TD,
+    DEBUG_REDDIT
+)
 
 
 import logging
-reddit_bug_logger = setup_logger(__name__, 'logs/reddit_debug.log', level=logging.DEBUG)
-info_logger = setup_logger(__name__, 'logs/INFO.log', level=logging.INFO)
+reddit_bug_logger = setup_logger(__name__, 'MMC_API/logs/reddit_debug.log', level=logging.DEBUG)
+info_logger = setup_logger(__name__, 'MMC_API/logs/INFO.log', level=logging.INFO)
 
 # global functions for multiprocessing  #####################################################
 
@@ -50,7 +54,8 @@ def praw_by_id(submission_id):
         submission = reddit.submission(id=submission_id)
         if not submission.stickied:
             data = extract_data(submission)
-            if any(submission.url.endswith(filetype) for filetype in FILE_TYPES): worker_db.insert(data)
+            if any(submission.url.endswith(filetype) for filetype in IMG_FILE_TYPES):
+                worker_db.insert(data)
     except Exception as e:
         if DEBUG_REDDIT: reddit_bug_logger.debug(e)
 

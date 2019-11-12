@@ -19,9 +19,9 @@ from multiprocessing import current_process
 
 from keras.preprocessing.image import ImageDataGenerator
 
-from functions.misc import check_isDeleted
-from functions.workerdb_compilers import update_status_col
-from functions.constants import (
+from MMC_API.functions.utils import check_isDeleted
+from MMC_API.functions.workerdb_compilers import update_status_col
+from MMC_API.functions.constants import (
     IMGDIR_PATH,
     WORKER_DB_URI,
     NUM_WORKERS,

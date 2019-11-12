@@ -29,8 +29,8 @@ def init_reddit(id):
                     username=reddit_oauth['USERNAME'])
 
 def check_isDeleted(output_filename):
-    deleted = cv2.imread('assets/deleted_img/image404.png')
-    deleted_nb = cv2.imread('assets/deleted_img/image404_nb.png')
+    deleted = cv2.imread('static/deleted_img/image404.png')
+    deleted_nb = cv2.imread('static/deleted_img/image404_nb.png')
     image = cv2.imread(output_filename)
 
     try:

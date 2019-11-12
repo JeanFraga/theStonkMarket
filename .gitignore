@@ -1,6 +1,6 @@
-/memes_imgdir
-/databases
-/logs
+/MMC_API/memes_imgdir
+/MMC_API/databases
+/MMC_API/logs
 
 ### VisualStudioCode ###
 /.vscode

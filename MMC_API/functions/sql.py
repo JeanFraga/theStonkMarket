@@ -5,7 +5,7 @@ import time
 import pandas as pd
 import os
 from time import time, mktime
-from functions.constants import MONTH_TD, DB_PATH
+from MMC_API.functions.constants import MONTH_TD, DB_PATH
 
 # SQL strings #####################################################################
 
@@ -77,21 +77,24 @@ def get_table_list():
     return db_list
 
 def get_time_range(table, year, month, day=1, hour=0, minute=0):
-    dt = datetime(year=year, month=month, day=day, hour=hour, minute=minute)
-    fresh_month_ts = mktime(dt.timetuple())
+    kwargs = {
+        'year': year,
+        'month': month,
+        'day': day,
+        'hour': hour,
+        'minute': minute
+    }
+    fresh_month_ts = mktime(datetime(**kwargs).timetuple())
 
     max_db_time = get_max_timestamp(table)
-    if not max_db_time:
-        max_db_time = fresh_month_ts
+    if not max_db_time: max_db_time = fresh_month_ts
 
     if month == 12:
-        next_month = 1
-        year += 1
-    else:
-        next_month = month+1
+        kwargs['month'] = 1
+        kwargs['year'] += 1
+    else: kwargs['month'] += 1
 
-    dt = datetime(year=year, month=next_month, day=day, hour=hour, minute=minute)
-    next_month_ts = mktime(dt.timetuple())
+    next_month_ts = mktime(datetime(**kwargs).timetuple())
 
     return max_db_time, next_month_ts
 

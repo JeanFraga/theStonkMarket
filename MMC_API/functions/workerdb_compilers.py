@@ -3,8 +3,8 @@ import json
 import pandas as pd
 import sqlite3
 
-from functions.sql import insert_meme_data
-from functions.constants import WORKER_DB_URI, DB_PATH
+from MMC_API.functions.sql import insert_meme_data
+from MMC_API.functions.constants import WORKER_DB_URI, DB_PATH
 
 def clear_worker_dbs():
     for i in range(0, 8):
