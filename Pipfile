@@ -6,15 +6,25 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-pandas = "*"
+requests = "*"
 numpy = "*"
-tqdm = "*"
-praw = "*"
-tinydb = "*"
+tensorflow-gpu = "==2.0.0"
+imageai = "*"
+flask = "*"
+python-decouple = "*"
+python-dotenv = "*"
+flask-cors = "*"
+flask-sqlalchemy = "*"
 pillow = "*"
 opencv-python = "*"
-tensorflow = "*"
 keras = "*"
+pandas = "*"
+boto3 = "*"
+botocore = "*"
+mtcnn = "*"
+beautifulsoup4 = "*"
+lxml = "*"
+google-images-download = "*"
 
 [requires]
 python_version = "3.7"
