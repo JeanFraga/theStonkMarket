@@ -71,8 +71,6 @@ def download_img(data):
     
 
 def engine(name):
-
-    hashes = []
     for meme in search_google(name):
         download_img(meme)
 
