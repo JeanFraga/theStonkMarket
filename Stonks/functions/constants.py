@@ -1,0 +1,1 @@
+IMGDIR_PATH = 'Stonks/databases/imgdir'
