@@ -1,10 +1,12 @@
-import keras,os
-from keras.models import Sequential
+import keras, os
+from keras import applications
+from keras.models import Sequential, Model, load_model
 from keras.models import load_model
-from keras.layers import Dense, Conv2D, MaxPool2D , Flatten
+from keras.layers import Dense, Conv2D, MaxPool2D , Flatten, Dropout, Dense
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint, EarlyStopping
+
 from Stonks.models.vgg16.architecture import get_blank_vgg16
 from Stonks.functions.constants import IMGDIR_PATH
 import numpy as np
@@ -12,11 +14,21 @@ import matplotlib.pyplot as plt
 
 img_height = 224
 img_width = 224
+img_channel = 3
 batch_size = 32
 weights_path = "Stonks/models/vgg16/template_clf.h5"
 
-model = get_blank_vgg16()
-model = load_model(weights_path)
+base_model = applications.VGG16(weights='imagenet', include_top=False, input_shape=(img_height, img_width, img_channel))
+
+add_model = Sequential()
+add_model.add(Flatten(input_shape=base_model.output_shape[1:]))
+add_model.add(Dense(256, activation='relu'))
+add_model.add(Dense(units=84, activation="softmax"))
+
+model = Model(inputs=base_model.input, outputs=add_model(base_model.output))
+
+# model = get_blank_vgg16()
+# model = load_model(weights_path)
 
 train_datagen = ImageDataGenerator(
     rescale=1./255,
