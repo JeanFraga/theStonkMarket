@@ -28,6 +28,6 @@ def get_blank_vgg16():
     model.add(Flatten())
     model.add(Dense(units=4096,activation="relu"))
     model.add(Dense(units=4096,activation="relu"))
-    model.add(Dense(units=83, activation="softmax"))
+    model.add(Dense(units=84, activation="softmax"))
 
     return model
