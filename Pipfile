@@ -26,6 +26,7 @@ beautifulsoup4 = "*"
 lxml = "*"
 google-images-download = "*"
 tqdm = "*"
+waitress = "*"
 
 [requires]
 python_version = "3.7"
