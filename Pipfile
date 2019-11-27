@@ -25,6 +25,7 @@ mtcnn = "*"
 beautifulsoup4 = "*"
 lxml = "*"
 google-images-download = "*"
+tqdm = "*"
 
 [requires]
 python_version = "3.7"
