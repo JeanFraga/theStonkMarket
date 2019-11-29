@@ -7,28 +7,42 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 
-from Stonks.models.vgg16.architecture import get_blank_vgg16
-from Stonks.functions.constants import IMGDIR_PATH
+from Stonks.functions.constants import DATASET_PATH
 import numpy as np
 import matplotlib.pyplot as plt
 
 img_height = 224
 img_width = 224
 img_channel = 3
+output_size = 10
 batch_size = 32
-weights_path = "Stonks/models/vgg16/template_clf.h5"
+weights_path = f"Stonks/models/template_clf_{output_size}.h5"
 
-base_model = applications.VGG16(weights='imagenet', include_top=False, input_shape=(img_height, img_width, img_channel))
+patience = 50
+epochs = 64_000 // batch_size
+steps_per_epoch = 32_000 // batch_size
+validation_steps = 3_200 // batch_size
 
-add_model = Sequential()
-add_model.add(Flatten(input_shape=base_model.output_shape[1:]))
-add_model.add(Dense(256, activation='relu'))
-add_model.add(Dense(units=84, activation="softmax"))
+optimizer_kwargs = {
+    'lr': 0.001,
+    'clipnorm': 1.,
+    'momentum': 0.9,
+    'decay': 0.000001,
+    'nesterov': False
+}
 
-model = Model(inputs=base_model.input, outputs=add_model(base_model.output))
+vgg16 = applications.VGG16(weights='imagenet', input_shape=(img_height, img_width, img_channel))
 
-# model = get_blank_vgg16()
-# model = load_model(weights_path)
+model = Sequential()
+for layer in vgg16.layers:
+    model.add(layer)
+
+model.layers.pop()
+model.add(Dense(units=output_size, activation="softmax"))
+
+try:
+    model.load_weights(weights_path)
+except: pass
 
 train_datagen = ImageDataGenerator(
     rescale=1./255,
@@ -39,7 +53,7 @@ train_datagen = ImageDataGenerator(
 )
 
 train_generator = train_datagen.flow_from_directory(
-    IMGDIR_PATH,
+    DATASET_PATH,
     target_size=(img_height, img_width),
     class_mode='categorical',
     color_mode="rgb",
@@ -49,7 +63,7 @@ train_generator = train_datagen.flow_from_directory(
 )
 
 validation_generator = train_datagen.flow_from_directory(
-    IMGDIR_PATH,
+    DATASET_PATH,
     target_size=(img_height, img_width),
     class_mode='categorical',
     color_mode="rgb",
@@ -59,7 +73,7 @@ validation_generator = train_datagen.flow_from_directory(
 )
 
 compile_kwargs = {
-    'optimizer': Adam(lr=0.001),
+    'optimizer': keras.optimizers.SGD(**optimizer_kwargs),
     'loss': keras.losses.categorical_crossentropy,
     'metrics': ['categorical_accuracy'] 
 }
@@ -76,22 +90,22 @@ checkpoint = ModelCheckpoint(weights_path, **checkpoint_kwargs)
 early_stopping_kwargs = {
     'monitor': 'categorical_accuracy',
     'min_delta': 0,
-    'patience': 20,
+    'patience': patience,
     'verbose': 1,
     'mode': 'auto'
 }
 early = EarlyStopping(**early_stopping_kwargs)
 generator_kwargs = {
-    'steps_per_epoch': 830,
+    'steps_per_epoch': steps_per_epoch,
     'generator': train_generator,
     'validation_data': validation_generator,
-    'validation_steps': 83,
-    'epochs': 100,
+    'validation_steps': validation_steps,
+    'epochs': epochs,
     'callbacks': [checkpoint,early]
 }
 
 def plot_model_results(hist):
-    plt.plot(hist.history["acc"])
+    plt.plot(hist.history["categorical_accuracy"])
     plt.plot(hist.history['val_acc'])
     plt.plot(hist.history['loss'])
     plt.plot(hist.history['val_loss'])

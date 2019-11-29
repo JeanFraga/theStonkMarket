@@ -3,6 +3,8 @@ from flask import Flask, redirect, url_for, flash, request, render_template, jso
 from Stonks.schema import DB
 from Stonks.functions.train_data_builder import build_template_db
 from Stonks.functions.imgdir_builder import build_imgdir
+from Stonks.routes.demo_file import demo_file_bp
+from Stonks.routes.demo_url import demo_url_bp
 
 
 from flask_cors import CORS
@@ -26,9 +28,12 @@ def create_app():
 
     DB.init_app(app)
 
+    app.register_blueprint(demo_file_bp)
+    app.register_blueprint(demo_url_bp)
+
     @app.route('/')
     def redir():
-        return redirect(url_for('imgdir'))
+        return redirect(url_for('upload'))
 
     @app.route('/imgdir')
     def imgdir():
@@ -43,7 +48,7 @@ def create_app():
     def reset():
         DB.drop_all()
         DB.create_all()
-        return redirect(url_for('templates'))
+        return redirect(url_for('upload'))
     
     @app.route('/upload')
     def upload():

@@ -1,1 +1,1 @@
-IMGDIR_PATH = 'Stonks/databases/imgdir'
+DATASET_PATH = 'Stonks/databases/dataset'

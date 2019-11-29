@@ -1,7 +1,7 @@
 import requests, os, io, hashlib, time
 from multiprocessing import cpu_count, Manager, Pool
 from google_images_download import google_images_download
-from Stonks.functions.constants import IMGDIR_PATH
+from Stonks.functions.constants import DATASET_PATH
 from contextlib import redirect_stdout
 from PIL import Image
 from PIL.ImageOps import fit
@@ -63,7 +63,7 @@ def download_img(data):
         # img = fit(raw_img, (224, 224), Image.ANTIALIAS)
         img = raw_img.convert('RGB')
         img_hash = hashlib.md5(img.tobytes()).hexdigest()
-        output_filename = os.path.join(IMGDIR_PATH, f"{name}", f"{img_hash}.png")
+        output_filename = os.path.join(DATASET_PATH, f"{name}", f"{img_hash}.png")
 
         with open(output_filename, 'wb') as out_file:
             img.save(out_file, format='png')
@@ -82,7 +82,7 @@ def build_imgdir():
 
     for name in names:
         try:
-            os.mkdir(os.path.join(IMGDIR_PATH, f"{name}"))
+            os.mkdir(os.path.join(DATASET_PATH, f"{name}"))
         except: pass
 
     with Pool(num_workers, initializer) as pool:
