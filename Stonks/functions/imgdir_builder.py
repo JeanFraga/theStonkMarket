@@ -14,16 +14,18 @@ imgdir_size = 1
 
 num_names = 100
 
-google_agrs = {
-    "limit": 100,
-    "chromedriver": "Stonks/assets/chromedriver.exe",
-    "no_download": True,
-    "print_urls": True,
-}
+
 
 def initializer():
     global google
+    global google_args
     google = google_images_download.googleimagesdownload()
+    google_agrs = {
+        "limit": 100,
+        "chromedriver": "Stonks/assets/chromedriver.exe",
+        "no_download": True,
+        "print_urls": True,
+    }
 
 def parse_data(doc):
     try:
@@ -43,7 +45,6 @@ def parse_data(doc):
 def search_google(name):
     try:
         google_agrs['keywords'] = name
-
         f = io.StringIO()
         with redirect_stdout(f):
             google.download(google_agrs)
@@ -71,8 +72,10 @@ def download_img(data):
     
 
 def engine(name):
-    for meme in search_google(name):
-        download_img(meme)
+    for i in range(12):
+        google_agrs['offset'] = 100*i
+        for meme in search_google(name):
+            download_img(meme)
 
 
 def build_imgdir():

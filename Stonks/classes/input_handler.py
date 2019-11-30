@@ -14,7 +14,7 @@ from cv2 import cv2
 TEMP_FOLDER = 'Stonks/assets/temp'
 weights_path = "Stonks/models/template_clfs/template_clf_84.h5"
 
-model = load_model(weights_path)
+# model = load_model(weights_path)
 
 class Input_Handler:
     def __init__(self):
