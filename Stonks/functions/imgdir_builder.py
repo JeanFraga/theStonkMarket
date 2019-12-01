@@ -1,96 +1,55 @@
-import requests, os, io, hashlib, time
-from multiprocessing import cpu_count, Manager, Pool
-from google_images_download import google_images_download
-from Stonks.functions.constants import DATASET_PATH
-from contextlib import redirect_stdout
-from PIL import Image
-from PIL.ImageOps import fit
-from tqdm import tqdm
-
+from bs4 import BeautifulSoup
 from Stonks.schema import DB, Template
+import requests
+from multiprocessing import cpu_count, Manager, Pool
 
-num_workers = cpu_count()
-imgdir_size = 1
-
-num_names = 100
-
-
-
-def initializer():
-    global google
-    global google_args
-    google = google_images_download.googleimagesdownload()
-    google_agrs = {
-        "limit": 100,
-        "chromedriver": "Stonks/assets/chromedriver.exe",
-        "no_download": True,
-        "print_urls": True,
-    }
-
-def parse_data(doc):
-    try:
-        lines = []
-        current_name = ''
-        for line in doc.split('\n'):
-            if 'Item name' in line:
-                name = line.split('=')[1].replace('\n', '')[1:]
-                current_name = name
-            if 'Image URL' in line:
-                url = line.split(':')[1].replace(' ', '') + ':' + line.split(':')[2].replace('\n', '')
-                lines.append([url, current_name])
-
-        return lines
-    except Exception as e: return str(e)
-
-def search_google(name):
-    try:
-        google_agrs['keywords'] = name
-        f = io.StringIO()
-        with redirect_stdout(f):
-            google.download(google_agrs)
-        out = f.getvalue()
-            
-        return parse_data(out)
-    except Exception as e: return str(e)
-
-def download_img(data):
-    url, name = data
-    
-    try:
-        with requests.get(url) as raw:
-            raw_img = Image.open(io.BytesIO(raw.content))
-    except: pass
-    else:
-        # img = fit(raw_img, (224, 224), Image.ANTIALIAS)
-        img = raw_img.convert('RGB')
-        img_hash = hashlib.md5(img.tobytes()).hexdigest()
-        output_filename = os.path.join(DATASET_PATH, f"{name}", f"{img_hash}.png")
-
-        with open(output_filename, 'wb') as out_file:
-            img.save(out_file, format='png')
+def get_meme_data(meme_containers):
+    data_list = []
+    for meme in meme_containers:
+        data_list.append(meme['src'])
         
-    
+    return data_list
 
-def engine(name):
-    for i in range(12):
-        google_agrs['offset'] = 100*i
-        for meme in search_google(name):
-            download_img(meme)
+def get_page_data(page_number):
+    return time.time()
+    templates = DB.session.query(Template).all()
+    imgflip_pages = [template.imgflip_page+'?page={}' for template in templates]
+    names = [template.name for template in templates][:20]
+    return names
 
+    for imgflip_page, name in zip(imgflip_pages, names):
+
+        with requests.get(imgflip_page.format(page_number)) as imgflip_page:
+            soup = BeautifulSoup(imgflip_page.text, 'lxml')
+        
+        meme_containers = soup.find_all('div', class_='base-img')
+
+        return 'test'
+        return meme_containers
+
+        if meme_containers: return {name: get_meme_data(meme_containers)}
+        else: return [0]
 
 def build_imgdir():
-    start = time.time()
-    templates = DB.session.query(Template).all()
-    names = [template.name for template in templates][:num_names]
 
-    for name in names:
-        try:
-            os.mkdir(os.path.join(DATASET_PATH, f"{name}"))
-        except: pass
+    start_page = 1
+    step_size = 5
+    memes_list = []
 
-    with Pool(num_workers, initializer) as pool:
-        r = pool.map_async(engine, names)
-        r.wait()
+    early_stopping = 0
+    while 0 not in memes_list:
+        early_stopping+=1
+        if early_stopping>2: break
 
-    return str((time.time()- start) /60)
+        end_page = start_page+step_size
+
+        memes = []
+        with Pool(cpu_count()) as pool:
+            r = pool.map_async(get_page_data, range(start_page, end_page), callback=memes.append)
+            r.wait()
+
+        # memes_list += [meme for sublist in memes[0] for meme in sublist]
+        start_page=end_page
+    # memes = list(filter(lambda a: a != 0, memes_list))
     
+    return memes
