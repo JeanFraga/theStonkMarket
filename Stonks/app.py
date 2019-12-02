@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, flash, request, render_template, jso
 
 from Stonks.schema import DB
 from Stonks.functions.templatedb_builder import build_template_db
+from Stonks.functions.google_imgdir_builder import build_google_imgdir
 from Stonks.functions.imgdir_builder import build_imgdir
 from Stonks.routes.demo_file import demo_file_bp
 from Stonks.routes.demo_url import demo_url_bp
@@ -34,6 +35,10 @@ def create_app():
     @app.route('/')
     def redir():
         return redirect(url_for('upload'))
+
+    @app.route('/google_imgdir')
+    def google_imgdir():
+        return jsonify(build_google_imgdir())
 
     @app.route('/imgdir')
     def imgdir():

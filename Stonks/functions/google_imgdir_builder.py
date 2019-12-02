@@ -10,12 +10,11 @@ from tqdm import tqdm
 from Stonks.schema import DB, Template
 
 num_workers = cpu_count()
-imgdir_size = 1
 
 num_names = 20
 
 google_agrs = {
-    "limit": 1000,
+    "limit": 100,
     "chromedriver": "Stonks/assets/chromedriver.exe",
     "no_download": True,
     "print_urls": True,
@@ -70,17 +69,14 @@ def download_img(data):
     
 
 def engine(name):
-    for i in range(5):
-        google_agrs['limit'] = 100*(i+1)
-        google_agrs['offset'] = 100*i
-        for meme in search_google(name):
-            download_img(meme)
+    for meme in search_google(name):
+        download_img(meme)
 
 
-def build_imgdir():
+def build_google_imgdir():
     start = time.time()
     templates = DB.session.query(Template).all()
-    names = [template.name for template in templates][:num_names]
+    names = [template.name for template in templates]#[:num_names]
 
     for name in names:
         try:

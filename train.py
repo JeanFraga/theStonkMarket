@@ -20,17 +20,17 @@ Constants
 img_height = 224
 img_width = 224
 img_channel = 3
-weights_path = f"Stonks/models/template_clf_{output_size}.h5"
 
-output_size = 10
+output_size = 810
 stepdown_multiplier = 4
 
 batch_size = 32
-patience = 50
+patience = 20
 
 epochs = 64_000 // batch_size
 steps_per_epoch = 32_000 // batch_size
 validation_steps = 3_200 // batch_size
+weights_path = f"Stonks/models/template_clf_{output_size}.h5"
 
 optimizer_kwargs = {
     'lr': 0.001,
@@ -55,14 +55,14 @@ model = Sequential()
 for layer in vgg16.layers[:-2]:
     model.add(layer)
 
-model.add(Dense(units=stepdown_multiplier*output_size, activation="softmax"))
+model.add(Dense(units=stepdown_multiplier*output_size, activation="relu"))
 model.add(Dense(units=output_size, activation="softmax"))
 
 try:
     model.load_weights(weights_path)
 
 except:
-    for layer in model.layers[:-15]:
+    for layer in model.layers[:-11]:
         layer.trainable = False
 
     model.compile(
