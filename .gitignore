@@ -1,18 +1,13 @@
-/MMC_API/memes_imgdir
-/MMC_API/databases
-/MMC_API/logs
-/databases
-### VisualStudioCode ###
-/.vscode
-
-### VisualStudioCode Patch ###
-# Ignore all local history of files
-.history
+dataset/
+*.h5
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+*.ipynb
+*.db
 
 # C extensions
 *.so
@@ -113,3 +108,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+#yolo model
+yolo.h5
+.vscode/settings.json
