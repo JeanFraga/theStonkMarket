@@ -8,13 +8,12 @@ mkdir Stonks
 cd Stonks
 virtualenv -p python3 Stonksenv
 git init
-git pull https://github.com/Build-Week-Pic-Metric-3/Data-Science.git master
+git pull https://github.com/Distortedlogic/theStonkMarket.git master
 mkdir Stonks/assets/weights
 cd Stonks/assets/weights/
 wget https://github.com/OlafenwaMoses/ImageAI/releases/download/1.0/yolo.h5
 cd ....
 conda activate
-source Stonksenv/bin/activate
 pip install -r ubuntu_requirements.txt
 pip install opencv-python
 conda install -c conda-forge opencv
