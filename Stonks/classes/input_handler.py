@@ -5,9 +5,8 @@ import numpy as np
 from decouple import config
 from PIL import Image
 from Stonks.schema import DB, Prediction
-from tensorflow_core.keras.applications.resnet50 import ResNet50, preprocess_input
-from tensorflow_core.keras.models import load_model
-from tensorflow_core.keras.preprocessing import image
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
 from cv2 import cv2
 
 # constants
