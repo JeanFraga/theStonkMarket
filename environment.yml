@@ -70,7 +70,6 @@ dependencies:
     - grpcio==1.23.0
     - wrapt==1.11.2
     - tensorflow==1.14.0
-    - tensorflow-base==1.14.0
     - vc==14.1
     - icc_rt==2019.0.0
     - h5py==2.10.0
