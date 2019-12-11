@@ -39,7 +39,6 @@ matplotlib==3.1.2
 mccabe==0.6.1
 numpy==1.17.4
 opencv-python==4.1.2.30
-opt-einsum==0+untagged.49.gdbede45.dirty
 pandas==0.25.3
 Pillow==6.2.1
 pipenv==2018.11.26
