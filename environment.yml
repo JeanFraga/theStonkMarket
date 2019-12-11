@@ -74,7 +74,6 @@ dependencies:
     - h5py==2.10.0
     - wincertstore==0.2
     - pyreadline==2.1
-    - intel-openmp==2019.4
   
 prefix: C:\Users\KryptoKing\Anaconda3\envs\stonks
 
