@@ -11,6 +11,11 @@ from Stonks.functions.constants import DATASET_PATH
 import numpy as np
 import matplotlib.pyplot as plt
 
+import tensorflow as tf
+config = tf.ConfigProto()
+config.gpu_options.allow_growth=True
+sess = tf.Session(config=config)
+
 """
 
 Constants
@@ -21,7 +26,7 @@ img_height = 224
 img_width = 224
 img_channel = 3
 
-output_size = 810
+output_size = 814
 stepdown_multiplier = 4
 
 batch_size = 32
@@ -60,16 +65,16 @@ model.add(Dense(units=output_size, activation="softmax"))
 
 try:
     model.load_weights(weights_path)
+except: pass
 
-except:
-    for layer in model.layers[:-11]:
-        layer.trainable = False
+for layer in model.layers[:-11]:
+    layer.trainable = False
 
-    model.compile(
-        optimizer = SGD(**optimizer_kwargs),
-        loss = keras.losses.categorical_crossentropy,
-        metrics = ['categorical_accuracy'] 
-    )
+model.compile(
+    optimizer = SGD(**optimizer_kwargs),
+    loss = keras.losses.categorical_crossentropy,
+    metrics = ['categorical_accuracy'] 
+)
 
 train_datagen = ImageDataGenerator(
     rescale=1./255,

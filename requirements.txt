@@ -45,6 +45,7 @@ pipenv==2018.11.26
 pipreqs==0.4.9
 prettytable==0.7.2
 protobuf==3.9.0
+psycopg2-binary==2.8.3
 pycodestyle==2.5.0
 pycryptodomex==3.8.2
 pylibscrypt==1.8.0

@@ -24,8 +24,7 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config.from_object("Stonks.config.Config")
 
     DB.init_app(app)
 
@@ -51,7 +50,7 @@ def create_app():
 
     @app.route('/reset')
     def reset():
-        DB.drop_all()
+        # DB.drop_all()
         DB.create_all()
         return redirect(url_for('upload'))
     
