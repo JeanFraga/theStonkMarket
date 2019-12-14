@@ -1,4 +1,4 @@
-FROM python:3.7.5
+FROM ubuntu:latest
 
 FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu16.04
 WORKDIR /app
