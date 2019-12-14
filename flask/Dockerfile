@@ -1,7 +1,6 @@
 FROM ubuntu:latest
 
 FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu16.04
-WORKDIR /app
 RUN apt-get update && apt-get upgrade -y --fix-missing
 RUN apt-get install -y emacs wget bzip2 sudo
 
@@ -18,6 +17,7 @@ RUN rm Anaconda3-5.0.1-Linux-x86_64.sh
 
 ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 
+RUN ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh
 RUN conda activate base
 RUN conda update conda
 RUN conda install -c anaconda anaconda
