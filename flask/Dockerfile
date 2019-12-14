@@ -4,7 +4,8 @@ FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu16.04
 WORKDIR /app
 RUN apt-get update && apt-get upgrade -y
 
-RUN add-apt-repository ppa:deadsnakes/ppa 
+RUN add-apt-repository ppa:deadsnakes/ppa
+RUN apt-get update
 RUN apt-get install python3.7 wget -y
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
 RUN update-alternatives --config python3
