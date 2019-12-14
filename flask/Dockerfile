@@ -7,7 +7,5 @@ RUN apt-get install build-essential python3-pip -y
 RUN python -m pip install --upgrade pip
 ADD  . /app
 RUN python -m pip install setuptools==41.0.0
-RUN python -m pip install -r requirements.txt && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
+RUN python -m pip install -r requirements.txt
 CMD [ "uwsgi", "app.ini" ]
