@@ -6,7 +6,7 @@ RUN update-alternatives --config python3.7
 RUN apt-get install build-essential python3-pip -y
 RUN python -m pip install --upgrade pip
 ADD  . /app
-RUN pip install -r requirements.txt && \
+RUN python -m pip install -r requirements.txt && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 CMD [ "uwsgi", "app.ini" ]
