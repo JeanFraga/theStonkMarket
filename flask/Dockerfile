@@ -3,20 +3,27 @@ FROM python:3.7.5
 FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu16.04
 WORKDIR /app
 RUN apt-get update && apt-get upgrade -y --fix-missing
+RUN apt-get install -y emacs wget bzip2 sudo
 
-RUN add-apt-repository ppa:deadsnakes/ppa
-RUN apt-get update
-RUN apt-get install python3.7 wget -y
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
-RUN update-alternatives --config python3
+RUN adduser --disabled-password --gecos '' ubuntu
+RUN adduser ubuntu sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+USER ubuntu
+WORKDIR /home/ubuntu/
+RUN chmod a+rwx /home/ubuntu/
 
-COPY --from=miniconda /opt/conda /opt/conda
-RUN chown -R $SETUSER: /opt/conda
-RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
-    echo "conda activate base" >> ~/.bashrc
-SHELL ["/bin/bash", "-c"]
-RUN source /home/$SETUSER/.bashrc \
- && conda create -q -f environment.yml --name stonks \
+RUN wget https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh
+RUN bash Anaconda3-5.0.1-Linux-x86_64.sh -b
+RUN rm Anaconda3-5.0.1-Linux-x86_64.sh
+
+ENV PATH /home/ubuntu/anaconda3/bin:$PATH
+
+RUN conda update conda
+RUN conda update anaconda
+RUN conda update --all
+
+RUN conda activate
+RUN  conda create -q -f environment.yml --name stonks \
  && conda activate stonks \
  && conda install -c conda-forge opencv tensorflow-gpu==1.14
 
