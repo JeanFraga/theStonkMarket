@@ -1,8 +1,8 @@
-FROM continuumio/miniconda3:latest AS miniconda
+FROM python:3.7.5
 
 FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu16.04
 WORKDIR /app
-RUN apt-get update && apt-get upgrade -y
+RUN apt-get update && apt-get upgrade -y --fix-missing
 
 RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get update
