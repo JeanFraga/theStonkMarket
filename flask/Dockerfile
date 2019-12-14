@@ -1,8 +1,6 @@
 FROM ubuntu:latest
 WORKDIR /app
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install software-properties-common
-RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get install python3.7 -y
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
 RUN update-alternatives --config python3
