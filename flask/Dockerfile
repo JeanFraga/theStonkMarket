@@ -11,13 +11,13 @@ USER ubuntu
 WORKDIR /home/ubuntu/
 RUN chmod a+rwx /home/ubuntu/
 
-RUN wget https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh
+RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh
 RUN bash Anaconda3-5.0.1-Linux-x86_64.sh -b
 RUN rm Anaconda3-5.0.1-Linux-x86_64.sh
 
 ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 
-RUN conda install -c anaconda anaconda
+
 RUN conda activate
 RUN conda update conda
 RUN conda install -c anaconda anaconda
