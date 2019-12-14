@@ -1,9 +1,7 @@
-FROM tensorflow/tensorflow:latest-gpu
-WORKDIR /usr/src/app
-RUN apt install --no-cache gcc musl-dev linux-headers
-RUN apt update && apt install postgresql-dev gcc python3-dev musl-dev
+FROM continuumio/anaconda3:latest
+WORKDIR /app
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install gcc apt-utils openssl -y
 RUN pip install --upgrade pip
-COPY ./requirements.txt /usr/src/app/requirements.txt
+ADD  . /app/requirements.txt
 RUN pip install -r requirements.txt
-COPY . /usr/src/app/
-CMD ["flask", "run"]
