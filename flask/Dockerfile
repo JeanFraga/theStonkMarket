@@ -1,4 +1,6 @@
-FROM ubuntu:latest
+FROM continuumio/miniconda3:latest AS miniconda
+
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu16.04
 WORKDIR /app
 RUN apt-get update && apt-get upgrade -y
 
@@ -6,12 +8,15 @@ RUN apt-get install python3.7 wget -y
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
 RUN update-alternatives --config python3
 
-RUN wget https://repo.anaconda.com/archive/Anaconda3-2019.10-Linux-x86_64.sh
-RUN sh Anaconda3-2019.10-Linux-x86_64.sh
-RUN source .bashrc
-RUN rm Anaconda3-2019.10-Linux-x86_64.sh
-RUN conda activate
-RUN conda install -c conda-forge opencv tensorflow-gpu==1.14
+COPY --from=miniconda /opt/conda /opt/conda
+RUN chown -R $SETUSER: /opt/conda
+RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
+    echo "conda activate base" >> ~/.bashrc
+SHELL ["/bin/bash", "-c"]
+RUN source /home/$SETUSER/.bashrc \
+ && conda create -q -f environment.yml --name stonks \
+ && conda activate stonks \
+ && conda install -c conda-forge opencv tensorflow-gpu==1.14
 
 RUN python3 -m pip install --upgrade pip
 ADD  . /app
