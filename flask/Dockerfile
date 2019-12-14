@@ -1,7 +1,7 @@
 FROM docker.io/paperspace/tensorflow:1.5.0-gpu
 WORKDIR /app
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get purge python2.7 -y
+RUN apt-get purge python2.7-minimal -y
 RUN apt-get install build-essential python3 -y
 RUN pip install --upgrade pip
 ADD  . /app
