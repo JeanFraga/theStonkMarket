@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, flash, request, render_template, jsonify
+from flask import Flask, redirect, url_for, request, render_template, jsonify
 
 from Stonks.schema import DB
 from Stonks.functions.templatedb_builder import build_template_db
