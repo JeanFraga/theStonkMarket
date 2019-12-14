@@ -5,6 +5,5 @@ RUN apt-get install uwsgi uwsgi-plugin-python -y
 RUN pip install --upgrade pip
 ADD  . /app
 RUN pip install pipenv
-RUN pipenv install
-RUN pipenv shell
+RUN pipenv install --system --deploy --ignore-pipfile
 CMD [ "uwsgi", "app.ini" ]
