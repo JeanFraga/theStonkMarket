@@ -23,12 +23,13 @@ RUN conda update conda
 RUN conda update --all
 RUN conda config --append channels conda-forge
 
+ADD  . /home/ubuntu/
+
 RUN conda create -q --file environment.yml --name stonks
 RUN conda activate stonks
 RUN conda install opencv tensorflow-gpu==1.14
 
 RUN python3 -m pip install --upgrade pip
-ADD  . /home/ubuntu/
 RUN python3 -m pip install setuptools==41.0.0
 RUN python3 -m pip install -r requirements.txt
 CMD [ "uwsgi", "app.ini" ]
