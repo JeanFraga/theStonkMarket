@@ -26,7 +26,7 @@ RUN conda config --append channels conda-forge
 ADD  . /home/ubuntu/
 
 RUN conda env create -q --file environment.yml --name stonks
-RUN conda activate stonks
+RUN /bin/bash -c ". activate Stonks"
 RUN conda install opencv tensorflow-gpu==1.14
 
 RUN python3 -m pip install --upgrade pip
