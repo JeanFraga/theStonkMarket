@@ -2,7 +2,7 @@ FROM ubuntu:latest
 FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
 
 RUN apt-get update && apt-get upgrade -y --fix-missing
-RUN apt-get install -y emacs wget bzip2 sudo
+RUN apt-get install -y emacs wget bzip2 sudo build-essential
 
 RUN adduser --disabled-password --gecos '' ubuntu
 RUN adduser ubuntu sudo
@@ -31,5 +31,6 @@ RUN conda install opencv tensorflow-gpu==1.14
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install setuptools==41.0.0
+RUN python3 -m pip install uwsgi
 RUN python3 -m pip install -r requirements.txt
 CMD [ "uwsgi", "app.ini" ]
