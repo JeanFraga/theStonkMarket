@@ -20,7 +20,6 @@ ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 
 RUN conda activate
 RUN conda update conda
-RUN conda install -c anaconda anaconda
 RUN conda update --all
 
 RUN conda create -q -f environment.yml --name stonks
