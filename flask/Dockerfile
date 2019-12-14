@@ -1,6 +1,6 @@
 FROM ubuntu:latest
-
 FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+
 RUN apt-get update && apt-get upgrade -y --fix-missing
 RUN apt-get install -y emacs wget bzip2 sudo
 
@@ -17,7 +17,7 @@ RUN rm Anaconda3-2019.10-Linux-x86_64.sh
 
 ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 
-
+RUN source /home/ubuntu/anaconda3/etc/profile.d/conda.sh
 RUN conda activate
 RUN conda update conda
 RUN conda update --all
