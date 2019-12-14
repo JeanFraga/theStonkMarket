@@ -1,4 +1,4 @@
-from Stonks import APP
+from ./Stonks import APP
 
 if __name__ == "__main__":
     APP.run()
