@@ -18,7 +18,7 @@ RUN rm Anaconda3-5.0.1-Linux-x86_64.sh
 
 ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 
-RUN conda activate
+RUN conda activate base
 RUN conda update conda
 RUN conda install -c anaconda anaconda
 RUN conda update --all
