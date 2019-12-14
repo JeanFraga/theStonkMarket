@@ -1,4 +1,4 @@
-uWSGI==*
+uWSGI==2.0.18
 absl-py==0.7.1
 appdirs==1.4.3
 appnope==0.1.0
