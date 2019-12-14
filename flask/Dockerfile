@@ -21,8 +21,9 @@ RUN conda init bash
 RUN /bin/bash -c ". activate"
 RUN conda update conda
 RUN conda update --all
+RUN conda config --append channels conda-forge
 
-RUN conda create -c conda-forge -q -f environment.yml --name stonks
+RUN conda create -q --file environment.yml --name stonks
 RUN conda activate stonks
 RUN conda install -c conda-forge opencv tensorflow-gpu==1.14
 
