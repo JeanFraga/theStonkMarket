@@ -1,7 +1,7 @@
 FROM docker.io/paperspace/tensorflow:1.5.0-gpu
 WORKDIR /app
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install python3.7
+RUN sudo apt-get install python3.7
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
 RUN update-alternatives --config python3
 RUN apt-get install build-essential python3-pip -y
