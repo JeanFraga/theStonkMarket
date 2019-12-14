@@ -7,8 +7,6 @@ from Stonks.functions.imgdir_builder import build_imgdir
 from Stonks.routes.demo_file import demo_file_bp
 from Stonks.routes.demo_url import demo_url_bp
 
-
-from flask_cors import CORS
 import os
 from decouple import config
 from dotenv import load_dotenv
@@ -22,7 +20,6 @@ logfile = path + logpath
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

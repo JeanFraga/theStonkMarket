@@ -27,10 +27,9 @@ ADD  . /home/ubuntu/
 
 RUN conda env create -q --file environment.yml --name stonks
 RUN /bin/bash -c ". activate Stonks"
-RUN conda install opencv tensorflow-gpu==1.14
+RUN conda install uwsgi
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install setuptools==41.0.0
-RUN python3 -m pip install uwsgi
 RUN python3 -m pip install -r requirements.txt
 CMD [ "uwsgi", "app.ini" ]

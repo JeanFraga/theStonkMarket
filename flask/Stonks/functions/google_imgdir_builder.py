@@ -5,7 +5,6 @@ from Stonks.functions.constants import DATASET_PATH
 from contextlib import redirect_stdout
 from PIL import Image
 from PIL.ImageOps import fit
-from tqdm import tqdm
 
 from Stonks.schema import DB, Template
 
