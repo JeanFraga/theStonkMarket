@@ -14,12 +14,11 @@ RUN chmod a+rwx /home/ubuntu/
 
 RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh
 RUN bash Anaconda3-2019.10-Linux-x86_64.sh -b
-RUN . .bashrc
 RUN rm Anaconda3-2019.10-Linux-x86_64.sh
 ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 
 RUN conda init bash 
-RUN conda activate
+RUN /bin/bash -c ". activate"
 RUN conda update conda
 RUN conda update --all
 RUN conda config --append channels conda-forge
