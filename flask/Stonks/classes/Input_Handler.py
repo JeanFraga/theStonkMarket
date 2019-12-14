@@ -4,14 +4,14 @@ import numpy as np
 
 from decouple import config
 from PIL import Image
-from ./Stonks.schema import DB, Prediction
+from Stonks.schema import DB, Prediction
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 from cv2 import cv2
 
 # constants
-TEMP_FOLDER = './Stonks/assets/temp'
-weights_path = "./Stonks/models/template_clfs/template_clf_84.h5"
+TEMP_FOLDER = 'Stonks/assets/temp'
+weights_path = "Stonks/models/template_clfs/template_clf_84.h5"
 
 # model = load_model(weights_path)
 

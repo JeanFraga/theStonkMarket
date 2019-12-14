@@ -1,11 +1,11 @@
-from flask import Flask, redirect, url_for, request, render_template, jsonify
+from flask import Flask, redirect, url_for, flash, request, render_template, jsonify
 
-from ./Stonks.schema import DB
-from ./Stonks.functions.templatedb_builder import build_template_db
-from ./Stonks.functions.google_imgdir_builder import build_google_imgdir
-from ./Stonks.functions.imgdir_builder import build_imgdir
-from ./Stonks.routes.demo_file import demo_file_bp
-from ./Stonks.routes.demo_url import demo_url_bp
+from Stonks.schema import DB
+from Stonks.functions.templatedb_builder import build_template_db
+from Stonks.functions.google_imgdir_builder import build_google_imgdir
+from Stonks.functions.imgdir_builder import build_imgdir
+from Stonks.routes.demo_file import demo_file_bp
+from Stonks.routes.demo_url import demo_url_bp
 
 
 from flask_cors import CORS
@@ -24,7 +24,8 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    app.config.from_object("Stonks.config.Config")
+    app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     DB.init_app(app)
 
@@ -50,7 +51,7 @@ def create_app():
 
     @app.route('/reset')
     def reset():
-        # DB.drop_all()
+        DB.drop_all()
         DB.create_all()
         return redirect(url_for('upload'))
     
