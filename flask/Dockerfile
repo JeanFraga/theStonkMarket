@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
 RUN apt-get update && apt-get upgrade -y --fix-missing
 RUN apt-get install -y emacs wget bzip2 sudo
 
@@ -12,8 +12,8 @@ WORKDIR /home/ubuntu/
 RUN chmod a+rwx /home/ubuntu/
 
 RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh
-RUN bash Anaconda3-5.0.1-Linux-x86_64.sh -b
-RUN rm Anaconda3-5.0.1-Linux-x86_64.sh
+RUN bash Anaconda3-2019.10-Linux-x86_64.sh -b
+RUN rm Anaconda3-2019.10-Linux-x86_64.sh
 
 ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 
