@@ -1,4 +1,4 @@
-FROM continuumio/anaconda3:latest
+FROM docker.io/paperspace/tensorflow:1.14.0-gpu
 WORKDIR /app
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install build-essential -y
