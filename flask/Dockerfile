@@ -7,6 +7,7 @@ RUN apt-get install -y emacs wget bzip2 sudo
 RUN adduser --disabled-password --gecos '' ubuntu
 RUN adduser ubuntu sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
 USER ubuntu
 WORKDIR /home/ubuntu/
 RUN chmod a+rwx /home/ubuntu/
@@ -14,15 +15,14 @@ RUN chmod a+rwx /home/ubuntu/
 RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh
 RUN bash Anaconda3-2019.10-Linux-x86_64.sh -b
 RUN rm Anaconda3-2019.10-Linux-x86_64.sh
-
 ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 
-RUN conda init bash
+RUN conda init bash 
 RUN /bin/bash -c ". activate"
 RUN conda update conda
 RUN conda update --all
 
-RUN conda create -q -f environment.yml --name stonks
+RUN conda create -c conda-forge -q -f environment.yml --name stonks
 RUN conda activate stonks
 RUN conda install -c conda-forge opencv tensorflow-gpu==1.14
 
