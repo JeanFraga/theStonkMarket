@@ -19,10 +19,11 @@ RUN rm Anaconda3-5.0.1-Linux-x86_64.sh
 ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 
 RUN conda update conda
-RUN conda update anaconda
 RUN conda update --all
 
 RUN conda activate
+RUN  conda create -q -f environment.yml --name stonks \
+ && conda activate stonks \
 RUN conda install -c conda-forge opencv tensorflow-gpu==1.14
 
 RUN python3 -m pip install --upgrade pip
