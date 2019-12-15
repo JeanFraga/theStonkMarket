@@ -26,7 +26,8 @@ RUN conda config --append channels conda-forge
 COPY . /home/ubuntu/
 RUN cd Stonks/models
 RUN wget https://github.com/OlafenwaMoses/ImageAI/releases/download/1.0/yolo.h5
-RUN cd ...
+RUN cd ..
+RUN cd ..
 
 RUN conda env create -q --file environment.yml --name stonks
 RUN /bin/bash -c ". activate stonks"
