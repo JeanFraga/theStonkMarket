@@ -34,6 +34,6 @@ services:
         ports:
         - "5432:5432"
 
-    volumes:
-        db-data:
-        web-data:
+volumes:
+    db-data:
+    web-data:
