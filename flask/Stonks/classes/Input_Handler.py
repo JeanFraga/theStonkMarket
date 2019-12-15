@@ -1,21 +1,38 @@
-import io, os, hashlib, requests, json
-
+import io, os, hashlib, requests, json, shutil
 import numpy as np
-
 from decouple import config
 from PIL import Image
-from Stonks.schema import DB
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
 from cv2 import cv2
 
-from Stonks.functions.build_model import create_model
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from os.path import join
+
+from Stonks.schema import DB
 
 # constants
-TEMP_FOLDER = 'Stonks/assets/temp'
+PRED_GEN_DIR = 'Stonks/assets/pred_gen_dir'
 weights_path = "Stonks/models/template_clf.h5"
 
-model = create_model()
+def to_hash(img):
+   return hashlib.md5(img.tobytes()).hexdigest()
+
+import os, keras
+from keras import applications
+from keras.models import Sequential, load_model
+from keras.layers import Dense
+from Stonks.functions.constants import DATASET_PATH
+
+img_height = 224
+img_width = 224
+img_channel = 3
+
+weights_path = "Stonks/models/template_clf.h5"
+
+try: output_size = sum(os.path.isdir(os.path.join(DATASET_PATH, i)) for i in os.listdir(DATASET_PATH))
+except: output_size = 807
+stepdown_multiplier = 4
 
 class Input_Handler:
     def __init__(self):
@@ -23,10 +40,42 @@ class Input_Handler:
 
     def get_by_url(self, url):
         with requests.get(url) as response:
-            raw = Image.open(io.BytesIO(response.content))
+            img = Image.open(io.BytesIO(response.content))
 
-        return self.get_by_file(raw)
+        PRED_GEN_FOLDER = join(PRED_GEN_DIR, f'{to_hash(img)}')
+        try: os.makedirs(join(PRED_GEN_FOLDER, 'temp'))
+        except: pass
+        img.save(join(PRED_GEN_FOLDER, 'temp/temp.png'), format='png')
 
-    def get_by_file(self, img):
-        out = model.predict(img)
+        PRED_GEN = ImageDataGenerator().flow_from_directory(
+            PRED_GEN_FOLDER,
+            target_size=(img_height, img_width),
+            color_mode="rgb",
+        )
+
+        vgg16 = applications.VGG16(
+            weights='imagenet',
+            input_shape=(img_height, img_width, img_channel)
+        )
+
+        model = Sequential()
+        for layer in vgg16.layers[:-2]:
+            model.add(layer)
+
+        del vgg16
+
+        model.add(Dense(units=stepdown_multiplier*output_size, activation="relu"))
+        model.add(Dense(units=output_size, activation="softmax"))
+
+        try:
+            model.load_weights(weights_path)
+        except: pass
+
+        out = model.predict_generator(PRED_GEN)
+        shutil.rmtree(PRED_GEN_FOLDER)
+
+        return str(np.argmax(out[0]))
+
+    def get_by_file(self):
+        out = model.predict_generator(PRED_GEN)
         return out

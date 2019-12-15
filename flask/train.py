@@ -13,9 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import tensorflow as tf
-config = tf.ConfigProto()
-config.gpu_options.allow_growth=True
-sess = tf.Session(config=config)
+
 
 """
 
@@ -38,69 +36,6 @@ optimizer_kwargs = {
     'nesterov': True
 }
 
-"""
-
-Model Construction
-
-"""
-
-model = create_model()
-
-for layer in model.layers[:-11]:
-    layer.trainable = False
-
-model.compile(
-    optimizer = SGD(**optimizer_kwargs),
-    loss = keras.losses.categorical_crossentropy,
-    metrics = ['categorical_accuracy'] 
-)
-
-train_datagen = ImageDataGenerator(
-    rescale=1./255,
-    shear_range=0.2,
-    zoom_range=0.2,
-    horizontal_flip=True,
-    validation_split=0.2
-)
-
-train_generator = train_datagen.flow_from_directory(
-    DATASET_PATH,
-    target_size=(img_height, img_width),
-    class_mode='categorical',
-    color_mode="rgb",
-    subset='training',
-    shuffle=True,
-    seed=42
-)
-
-validation_generator = train_datagen.flow_from_directory(
-    DATASET_PATH,
-    target_size=(img_height, img_width),
-    class_mode='categorical',
-    color_mode="rgb",
-    subset='validation',
-    shuffle=True,
-    seed=42
-)
-
-checkpoint = ModelCheckpoint(
-    weights_path,
-    monitor = 'categorical_accuracy',
-    verbose = 1,
-    save_best_only = True,
-    save_weights_only = False,
-    mode = 'auto',
-    period = 1
-
-)
-early = EarlyStopping(
-    monitor = 'categorical_accuracy',
-    min_delta = 0,
-    patience = patience,
-    verbose = 1,
-    mode = 'auto'
-)
-
 
 def plot_model_results(hist):
     plt.plot(hist.history["categorical_accuracy"])
@@ -114,6 +49,63 @@ def plot_model_results(hist):
     plt.show()
 
 if __name__ == "__main__":
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth=True
+    sess = tf.Session(config=config)
+    train_datagen = ImageDataGenerator(
+        rescale=1./255,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True,
+        validation_split=0.2
+    )
+
+    train_generator = train_datagen.flow_from_directory(
+        DATASET_PATH,
+        target_size=(img_height, img_width),
+        class_mode='categorical',
+        color_mode="rgb",
+        subset='training',
+        shuffle=True,
+        seed=42
+    )
+
+    validation_generator = train_datagen.flow_from_directory(
+        DATASET_PATH,
+        target_size=(img_height, img_width),
+        class_mode='categorical',
+        color_mode="rgb",
+        subset='validation',
+        shuffle=True,
+        seed=42
+    )
+
+    checkpoint = ModelCheckpoint(
+        weights_path,
+        monitor = 'categorical_accuracy',
+        verbose = 1,
+        save_best_only = True,
+        save_weights_only = False,
+        mode = 'auto',
+        period = 1
+    )
+    early = EarlyStopping(
+        monitor = 'categorical_accuracy',
+        min_delta = 0,
+        patience = patience,
+        verbose = 1,
+        mode = 'auto'
+    )
+    model = create_model()
+
+    for layer in model.layers[:-11]:
+        layer.trainable = False
+
+    model.compile(
+        optimizer = SGD(**optimizer_kwargs),
+        loss = keras.losses.categorical_crossentropy,
+        metrics = ['categorical_accuracy'] 
+    )
     hist = model.fit_generator(
         steps_per_epoch = steps_per_epoch,
         generator = train_generator,

@@ -1,4 +1,4 @@
-import os
+import os, keras
 from keras import applications
 from keras.models import Sequential, load_model
 from keras.layers import Dense
