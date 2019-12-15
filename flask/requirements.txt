@@ -54,6 +54,7 @@ requests == 2.22.0
 # Stonks\classes\Input_Handler.py: 8,9
 # train.py: 14
 tensorflow_gpu == 1.14.0
+tensorflow == 1.14.0
 
 psycopg2-binary==2.8.4
 lxml==4.4.2

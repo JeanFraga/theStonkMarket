@@ -9,11 +9,16 @@ class Template(DB.Model):
     imgflip_page = DB.Column(DB.String(200), nullable=False)
     filename = DB.Column(DB.String(200))
 
-class Prediction(DB.Model):
-    id = DB.Column(DB.Integer, primary_key=True)
-    url = DB.Column(DB.String(200))
-    filename = DB.Column(DB.String(200))
-    hash = DB.Column(DB.String(200), nullable=False)
+# class Prediction(DB.Model):
+#     __tablename__ = 'predictions'
+#     __table_args__ = (
+#         db.UniqueConstraint('component_id', 'commit_id', name='unique_component_commit'),
+#     )
 
-    pred = DB.Column(DB.Integer, DB.ForeignKey('template.name'), nullable=False)
-    template = DB.relationship('Template', backref=DB.backref('preds', lazy=True))
+#     id = DB.Column(DB.Integer, primary_key=True)
+#     url = DB.Column(DB.String(200))
+#     filename = DB.Column(DB.String(200))
+#     hash = DB.Column(DB.String(200), nullable=False)
+
+#     pred = DB.Column(DB.Integer, DB.ForeignKey('template.name'), nullable=False)
+#     template = DB.relationship('Template', backref=DB.backref('preds', lazy=True))
