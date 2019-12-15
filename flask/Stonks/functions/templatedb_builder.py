@@ -39,8 +39,6 @@ def build_template_db():
             r = pool.map_async(get_page_data, range(start_page, end_page), callback=memes.append)
             r.wait()
 
-            return str(memes)
-
         memes_list += [meme for sublist in memes[0] for meme in sublist]
         start_page=end_page
     memes = list(filter(lambda a: a != 0, memes_list))

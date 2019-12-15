@@ -56,3 +56,4 @@ requests == 2.22.0
 tensorflow_gpu == 1.14.0
 
 psycopg2-binary==2.8.4
+lxml==4.4.2
