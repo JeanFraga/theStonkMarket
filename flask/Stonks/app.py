@@ -6,6 +6,7 @@ from Stonks.functions.google_imgdir_builder import build_google_imgdir
 from Stonks.functions.imgdir_builder import build_imgdir
 from Stonks.routes.demo_file import demo_file_bp
 from Stonks.routes.demo_url import demo_url_bp
+from Stonks.config import BaseConfig
 
 import os
 from decouple import config
@@ -21,8 +22,7 @@ logfile = path + logpath
 def create_app():
     app = Flask(__name__)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config.from_object(BaseConfig)
 
     DB.init_app(app)
 

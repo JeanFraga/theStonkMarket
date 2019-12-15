@@ -9,6 +9,10 @@ services:
             - ./.env.dev
         expose:
             - 8080
+        links:
+            - postgres:postgres
+        volumes:
+            - web-data:/home/ubuntu/flask
     nginx:
         build: ./nginx
         container_name: nginx
@@ -16,3 +20,20 @@ services:
         ports:
             - "80:80"
 
+    data:
+        image: postgres:latest
+        volumes:
+        - db-data:/home/ubuntu/postgres
+        command: "true"
+
+    postgres:
+        restart: always
+        image: postgres:latest
+        volumes:
+        - db-data:/home/ubuntu/postgres
+        ports:
+        - "5432:5432"
+
+    volumes:
+        db-data:
+        web-data:
