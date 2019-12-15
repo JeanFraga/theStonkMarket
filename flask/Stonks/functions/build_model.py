@@ -10,7 +10,9 @@ img_width = 224
 img_channel = 3
 
 weights_path = "Stonks/models/template_clf.h5"
-output_size = sum(os.path.isdir(os.path.join(DATASET_PATH, i)) for i in os.listdir(DATASET_PATH)) 
+
+try: output_size = sum(os.path.isdir(os.path.join(DATASET_PATH, i)) for i in os.listdir(DATASET_PATH))
+except: output_size = 807
 stepdown_multiplier = 4
 
 def create_model():
