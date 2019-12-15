@@ -1,7 +1,13 @@
-FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+FROM nvidia/cuda:10.2-runtime-ubuntu18.04
+ENV CUDNN_VERSION 7.6.5.32
 
 RUN apt-get update && apt-get upgrade -y --fix-missing
 RUN apt-get install -y emacs wget bzip2 sudo build-essential
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcudnn7=$CUDNN_VERSION-1+cuda10.2 && \
+    apt-mark hold libcudnn7 && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN adduser --disabled-password --gecos '' ubuntu
 RUN adduser ubuntu sudo
