@@ -9,16 +9,20 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 sudo apt-get update
 
-sudo wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh
-sudo bash Anaconda3-2019.10-Linux-x86_64.sh -b
-sudo rm Anaconda3-2019.10-Linux-x86_64.sh
+wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh
+sh Anaconda3-2019.10-Linux-x86_64.sh
+source .bashrc
+rm Anaconda3-2019.10-Linux-x86_64.sh
 
-sudo conda activate
+conda activate
+conda update conda
+conda update --all
+conda config --append channels conda-forge
 
-sudo mkdir theStonkMarket
+mkdir theStonkMarket
 cd theStonkMarket
-sudo git clone https://github.com/Distortedlogic/theStonkMarket.git
+git clone https://github.com/Distortedlogic/theStonkMarket.git
 
-sudo bash dl_model.sh -b
+sh dl_model.sh
 
 sudo docker-compose up --build
