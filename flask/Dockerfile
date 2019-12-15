@@ -6,7 +6,7 @@ ENV NVIDIA_DRIVER_CAPABILITIES all
 ENV TF_XLA_FLAGS --tf_xla_cpu_global_jit
 
 RUN apt-get update && apt-get upgrade -y --fix-missing
-RUN apt-get install -y wget sudo build-essential
+RUN apt-get install -y emacs wget bzip2 sudo build-essential
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libcudnn7=$CUDNN_VERSION-1+cuda10.2 && \
