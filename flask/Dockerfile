@@ -34,7 +34,7 @@ RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install -r requirements.txt
 
 RUN cd Stonks/models
-RUN wget -o template_clf.h5 https://drive.google.com/file/d/1bd2h9J2j26EZql9H4jADvXqUBevIKOSG/view?usp=sharing
+RUN wget -O template_clf.h5 https://drive.google.com/file/d/1bd2h9J2j26EZql9H4jADvXqUBevIKOSG/view?usp=sharing
 RUN cd .. && cd ..
 
 CMD [ "uwsgi", "app.ini" ]
