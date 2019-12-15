@@ -35,7 +35,7 @@ RUN python3 -m pip install -r requirements.txt
 RUN python3 -m pip install gdown
 
 RUN cd Stonks/models
-RUN gdown -O template_clf.h5 --id 1bd2h9J2j26EZql9H4jADvXqUBevIKOSG
+RUN gdown -O Stonks/models/template_clf.h5 --id 1bd2h9J2j26EZql9H4jADvXqUBevIKOSG
 RUN cd .. && cd ..
 
 CMD [ "uwsgi", "app.ini" ]
