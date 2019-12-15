@@ -28,5 +28,5 @@ class Input_Handler:
         return self.get_by_file(raw)
 
     def get_by_file(self, img):
-        out = model.predict_generator(im)
+        out = model.predict(img)
         return out
