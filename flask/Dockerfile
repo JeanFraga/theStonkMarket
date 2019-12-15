@@ -11,6 +11,7 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER ubuntu
 WORKDIR /home/ubuntu/
 RUN chmod a+rwx /home/ubuntu/
+RUN mkdir app
 
 RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh
 RUN bash Anaconda3-2019.10-Linux-x86_64.sh -b
@@ -24,10 +25,6 @@ RUN conda update --all
 RUN conda config --append channels conda-forge
 
 COPY . /home/ubuntu/
-RUN cd Stonks/models
-RUN wget https://github.com/OlafenwaMoses/ImageAI/releases/download/1.0/yolo.h5
-RUN cd ..
-RUN cd ..
 
 RUN conda env create -q --file environment.yml --name stonks
 RUN /bin/bash -c ". activate stonks"
@@ -35,4 +32,9 @@ RUN conda install libiconv uwsgi PyYAML
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install -r requirements.txt
+
+RUN cd Stonks/models
+RUN wget -o template_clf.h5 https://drive.google.com/file/d/1bd2h9J2j26EZql9H4jADvXqUBevIKOSG/view?usp=sharing
+RUN cd .. && cd ..
+
 CMD [ "uwsgi", "app.ini" ]

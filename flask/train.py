@@ -26,7 +26,7 @@ img_height = 224
 img_width = 224
 img_channel = 3
 
-output_size = 814
+output_size = sum(os.path.isdir(os.path.join(DATASET_PATH, i)) for i in os.listdir(DATASET_PATH)) 
 stepdown_multiplier = 4
 
 batch_size = 32
@@ -35,7 +35,7 @@ patience = 20
 epochs = 64_000 // batch_size
 steps_per_epoch = 32_000 // batch_size
 validation_steps = 3_200 // batch_size
-weights_path = f"Stonks/models/template_clf_{output_size}.h5"
+weights_path = f"Stonks/models/template_clf.h5"
 
 optimizer_kwargs = {
     'lr': 0.001,

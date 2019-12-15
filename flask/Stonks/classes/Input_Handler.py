@@ -11,7 +11,7 @@ from cv2 import cv2
 
 # constants
 TEMP_FOLDER = 'Stonks/assets/temp'
-weights_path = "Stonks/models/template_clfs/template_clf_84.h5"
+weights_path = "Stonks/models/template_clfs/template_clf.h5"
 
 # model = load_model(weights_path)
 
