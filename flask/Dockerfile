@@ -1,6 +1,8 @@
 FROM nvidia/cuda:10.2-runtime-ubuntu18.04
 ENV CUDNN_VERSION 7.6.5.32
 ENV NCCL_VERSION 2.5.6
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES all
 
 RUN apt-get update && apt-get upgrade -y --fix-missing
 RUN apt-get install -y emacs wget bzip2 sudo build-essential
