@@ -1,13 +1,14 @@
 import keras, os
 from keras import applications
-from keras.models import Sequential, Model, load_model
+from keras.models import Sequential, load_model
 from keras.models import load_model
-from keras.layers import Dense, Conv2D, MaxPool2D , Flatten, Dropout, Dense
+from keras.layers import Dense, Conv2D, MaxPool2D , Flatten, Dropout
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import SGD
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 
 from Stonks.functions.constants import DATASET_PATH
+from Stonks.functions.build_model import create_model, img_height, img_width, img_channel, weights_path
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -21,15 +22,6 @@ sess = tf.Session(config=config)
 Constants
 
 """
-
-weights_path = "Stonks/models/template_clf.h5"
-
-img_height = 224
-img_width = 224
-img_channel = 3
-
-output_size = sum(os.path.isdir(os.path.join(DATASET_PATH, i)) for i in os.listdir(DATASET_PATH)) 
-stepdown_multiplier = 4
 
 batch_size = 32
 patience = 20
@@ -52,21 +44,7 @@ Model Construction
 
 """
 
-vgg16 = applications.VGG16(
-    weights='imagenet',
-    input_shape=(img_height, img_width, img_channel)
-)
-
-model = Sequential()
-for layer in vgg16.layers[:-2]:
-    model.add(layer)
-
-model.add(Dense(units=stepdown_multiplier*output_size, activation="relu"))
-model.add(Dense(units=output_size, activation="softmax"))
-
-try:
-    model.load_weights(weights_path)
-except: pass
+model = create_model()
 
 for layer in model.layers[:-11]:
     layer.trainable = False

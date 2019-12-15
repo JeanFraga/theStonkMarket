@@ -9,11 +9,13 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 from cv2 import cv2
 
+from Stonks.functions.build_model import create_model
+
 # constants
 TEMP_FOLDER = 'Stonks/assets/temp'
 weights_path = "Stonks/models/template_clf.h5"
 
-model = load_model(weights_path)
+model = create_model()
 
 class Input_Handler:
     def __init__(self):
