@@ -23,14 +23,14 @@ services:
     data:
         image: postgres:latest
         volumes:
-        - db-data:/home/ubuntu/postgres
+        - db-data:/var/lib/postgresql/data
         command: "true"
 
     postgres:
         restart: always
         image: postgres:latest
         volumes:
-        - db-data:/home/ubuntu/postgres
+        - db-data:/var/lib/postgresql/data
         ports:
         - "5432:5432"
 
