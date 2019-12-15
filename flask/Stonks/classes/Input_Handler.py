@@ -4,7 +4,7 @@ import numpy as np
 
 from decouple import config
 from PIL import Image
-from Stonks.schema import DB, Prediction
+from Stonks.schema import DB
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 from cv2 import cv2
