@@ -9,6 +9,9 @@ Flask == 1.1.1
 # Stonks\schema.py: 1
 Flask_SQLAlchemy == 2.4.1
 
+# train.py: 8
+Keras == 2.3.1
+
 # Stonks\classes\Input_Handler.py: 6
 # Stonks\functions\google_imgdir_builder.py: 6,7
 # Stonks\routes\demo_file.py: 6
@@ -22,17 +25,22 @@ beautifulsoup4 == 4.8.1
 # Stonks\functions\google_imgdir_builder.py: 3
 google_images_download == 2.8.0
 
+# train.py: 12
+matplotlib == 3.1.2
+
 # Stonks\classes\Input_Handler.py: 3
+# train.py: 11
 numpy == 1.17.4
 
 # Stonks\classes\Input_Handler.py: 10
 opencv_python == 4.1.2.30
 
-# Stonks\app.py: 11
+# Stonks\app.py: 12
 # Stonks\classes\Input_Handler.py: 5
+# Stonks\config.py: 1
 python_decouple == 3.3
 
-# Stonks\app.py: 12
+# Stonks\app.py: 13
 python_dotenv == 0.10.3
 
 # Stonks\classes\Input_Handler.py: 1
@@ -44,4 +52,7 @@ python_dotenv == 0.10.3
 requests == 2.22.0
 
 # Stonks\classes\Input_Handler.py: 8,9
+# train.py: 14
 tensorflow_gpu == 1.14.0
+
+psycopg2-binary==2.8.4

@@ -11,6 +11,7 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER ubuntu
 WORKDIR /home/ubuntu/
 RUN chmod a+rwx /home/ubuntu/
+COPY . /home/ubuntu/
 
 RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh
 RUN bash Anaconda3-2019.10-Linux-x86_64.sh -b
@@ -23,11 +24,9 @@ RUN conda update conda
 RUN conda update --all
 RUN conda config --append channels conda-forge
 
-ADD  . /home/ubuntu/
-
 RUN conda env create -q --file environment.yml --name stonks
 RUN /bin/bash -c ". activate stonks"
-RUN conda install libiconv uwsgi
+RUN conda install libiconv uwsgi PyYAML
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install -r requirements.txt
