@@ -1,3 +1,4 @@
+name: Stonks
 channels:
   - conda-forge
   - defaults
@@ -5,4 +6,5 @@ dependencies:
   - python=3.7.3
   - tensorflow-gpu==1.14
   - opencv
+prefix: C:\Users\KryptoKing\Anaconda3\envs\Stonks
 
