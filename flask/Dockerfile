@@ -37,7 +37,7 @@ COPY . /home/ubuntu/
 
 RUN conda env create -q --file environment.yml --name stonks
 RUN /bin/bash -c ". activate stonks"
-RUN conda install libiconv uwsgi PyYAML
+RUN conda install libiconv uwsgi uwsgi-plugin-python PyYAML
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install -r requirements.txt
