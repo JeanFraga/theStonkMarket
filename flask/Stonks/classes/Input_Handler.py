@@ -8,7 +8,7 @@ from Stonks.schema import DB, Template
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from os.path import join
+from os.path import join, dirname
 
 # constants
 PRED_GEN_DIR = 'Stonks/assets/pred_gen_dir'
@@ -41,7 +41,7 @@ class Input_Handler:
         with requests.get(url) as response:
             img = Image.open(io.BytesIO(response.content))
 
-        PRED_GEN_FOLDER = join(PRED_GEN_DIR, f'{to_hash(img)}')
+        PRED_GEN_FOLDER = join(dirname(__file__), PRED_GEN_DIR, f'{to_hash(img)}')
         os.makedirs(join(PRED_GEN_FOLDER, 'temp'))
         img.save(join(PRED_GEN_FOLDER, 'temp/temp.png'), format='png')
 
