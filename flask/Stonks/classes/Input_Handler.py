@@ -4,12 +4,11 @@ from decouple import config
 from PIL import Image
 from cv2 import cv2
 
+from Stonks.schema import DB, Template
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from os.path import join
-
-from Stonks.schema import DB
 
 # constants
 PRED_GEN_DIR = 'Stonks/assets/pred_gen_dir'
@@ -43,8 +42,7 @@ class Input_Handler:
             img = Image.open(io.BytesIO(response.content))
 
         PRED_GEN_FOLDER = join(PRED_GEN_DIR, f'{to_hash(img)}')
-        try: os.makedirs(join(PRED_GEN_FOLDER, 'temp'))
-        except: pass
+        os.makedirs(join(PRED_GEN_FOLDER, 'temp'))
         img.save(join(PRED_GEN_FOLDER, 'temp/temp.png'), format='png')
 
         PRED_GEN = ImageDataGenerator().flow_from_directory(
@@ -71,10 +69,14 @@ class Input_Handler:
             model.load_weights(weights_path)
         except: pass
 
-        out = model.predict_generator(PRED_GEN)
+        # templates = DB.session.query(Template).all()
+        # names = [template.name for template in templates]   
+        # out = names[np.argmax(model.predict_generator(PRED_GEN)[0])]
+        out = np.argmax(model.predict_generator(PRED_GEN)[0])
         shutil.rmtree(PRED_GEN_FOLDER)
 
-        return str(np.argmax(out[0]))
+
+        return str(out)
 
     def get_by_file(self):
         out = model.predict_generator(PRED_GEN)
