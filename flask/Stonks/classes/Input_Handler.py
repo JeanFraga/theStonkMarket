@@ -11,7 +11,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from os.path import join, dirname
 
 # constants
-PRED_GEN_DIR = 'Stonks/assets/pred_gen_dir'
+PRED_GEN_DIR = 'pred_gen_dir'
 weights_path = "Stonks/models/template_clf.h5"
 
 def to_hash(img):
