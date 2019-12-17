@@ -6,7 +6,8 @@ ENV NVIDIA_DRIVER_CAPABILITIES all
 ENV TF_XLA_FLAGS --tf_xla_cpu_global_jit
 
 RUN apt-get update && apt-get upgrade -y --fix-missing
-RUN apt-get install -y emacs wget bzip2 sudo build-essential uwsgi-plugin-python3
+RUN apt-get install -y emacs wget bzip2 sudo build-essential \
+uwsgi-plugin-python3 build-dep python-psycopg2
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libcudnn7=$CUDNN_VERSION-1+cuda10.2 && \
@@ -35,7 +36,7 @@ RUN conda config --append channels conda-forge
 
 COPY . /home/ubuntu/
 
-RUN conda env create -q --file environment.yml --name stonks
+RUN conda env create --file environment.yml --name stonks
 RUN /bin/bash -c ". activate stonks"
 RUN conda install libiconv uwsgi PyYAML
 
