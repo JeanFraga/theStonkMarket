@@ -8,11 +8,6 @@ ENV TF_XLA_FLAGS --tf_xla_cpu_global_jit
 RUN apt-get update && apt-get upgrade -y --fix-missing
 RUN apt-get install -y wget sudo build-essential uwsgi-plugin-python3 python-psycopg2
 
-RUN cp /etc/apt/sources.list /etc/apt/sources.list~
-RUN sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
-RUN apt-get update
-RUN apt-get build-dep python-psycopg2 -y
-
 RUN apt-get install -y --no-install-recommends \
     libcudnn7=$CUDNN_VERSION-1+cuda10.2 && \
     apt-mark hold libcudnn7 && \
