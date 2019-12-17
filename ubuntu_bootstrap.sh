@@ -18,11 +18,12 @@ sh Anaconda3-2019.10-Linux-x86_64.sh
 source .bashrc
 rm Anaconda3-2019.10-Linux-x86_64.sh
 conda config --set auto_activate_base false
-
-conda activate
-conda update conda
-conda update --all
 conda config --append channels conda-forge
+
+conda update conda
+conda update anaconda
+conda update --all
+conda activate
 
 mkdir theStonkMarket
 cd theStonkMarket

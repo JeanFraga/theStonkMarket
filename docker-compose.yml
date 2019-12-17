@@ -10,7 +10,7 @@ services:
         expose:
             - 8080
         volumes:
-            - web-data:/home/ubuntu/app
+            - web-data:/home/ubuntu/
     nginx:
         build: ./nginx
         container_name: nginx
@@ -18,7 +18,7 @@ services:
         ports:
             - "80:80"
         volumes:
-            - web-data:/home/ubuntu/app
+            - web-data:/home/ubuntu/
 
     data:
         image: postgres:latest
