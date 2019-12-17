@@ -5,47 +5,42 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES all
 ENV TF_XLA_FLAGS --tf_xla_cpu_global_jit
 
-RUN apt-get update && apt-get upgrade -qq -y --fix-missing
-RUN apt-get install -qq -y emacs wget bzip2 sudo build-essential uwsgi-plugin-python3 python3-psycopg2
+RUN apt-get update && apt-get upgrade -qq -y --fix-missing && \
+    apt-get install -qq -y \
+    emacs wget bzip2 sudo \
+    build-essential uwsgi-plugin-python3 python3-psycopg2
 
-RUN cp /etc/apt/sources.list /etc/apt/sources.list~
-RUN sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
-RUN apt-get update -qq
-RUN DEBIAN_FRONTEND=noninteractive apt-get build-dep python3-psycopg2 -y -qq
+RUN cp /etc/apt/sources.list /etc/apt/sources.list~ && \
+    sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list && \
+    apt-get update -qq && \
+    DEBIAN_FRONTEND=noninteractive apt-get build-dep python3-psycopg2 -y -qq
 
 RUN apt-get install -y -qq --no-install-recommends \
     libcudnn7=$CUDNN_VERSION-1+cuda10.2 && \
     apt-mark hold -qq libcudnn7 && \
-    rm -rf /var/lib/apt/lists/*
-RUN apt-get update -qq
-
-RUN adduser --disabled-password --gecos '' ubuntu
-RUN adduser ubuntu sudo
-RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update -qq && \
+    adduser --disabled-password --gecos '' ubuntu && adduser ubuntu sudo && \
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 USER ubuntu
 WORKDIR /home/ubuntu/
-RUN chmod a+rwx /home/ubuntu/
-RUN mkdir app
+RUN chmod a+rwx /home/ubuntu/ && mkdir app
 
-RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh -qq
-RUN bash Anaconda3-2019.10-Linux-x86_64.sh -b > /dev/null
-RUN rm Anaconda3-2019.10-Linux-x86_64.sh
+RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh -qq && \
+    bash Anaconda3-2019.10-Linux-x86_64.sh -b > /dev/null && \
+    rm Anaconda3-2019.10-Linux-x86_64.sh
 ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 
-RUN conda init bash
-RUN /bin/bash -c ". activate"
-RUN conda update -q conda
-RUN conda update -q --all
-RUN conda config -q --append channels conda-forge
+RUN conda init bash && /bin/bash -c ". activate" && \
+    conda update -q conda && conda update -q --all && \
+    conda config -q --append channels conda-forge
 
 COPY . /home/ubuntu/app
 
-RUN conda env create -q --file environment.yml --name stonks
-RUN /bin/bash -c ". activate stonks"
-RUN conda install libiconv uwsgi PyYAML
-
-RUN python3 -m pip install --upgrade pip -q
-RUN python3 -m pip install -r requirements.txt -q
+RUN cd app && conda env create -q --file environment.yml --name stonks && \
+    /bin/bash -c ". activate stonks" && conda install libiconv uwsgi PyYAML && \
+    python3 -m pip install --upgrade pip -q && \
+    python3 -m pip install -r requirements.txt -q
 
 CMD [ "uwsgi", "app.ini" ]
