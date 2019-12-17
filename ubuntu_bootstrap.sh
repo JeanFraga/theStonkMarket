@@ -1,17 +1,19 @@
-sudo apt-get update && sudo apt-get upgrade -y
+echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | tee -a /etc/sudoers
 
-sudo add-apt-repository ppa:graphics-drivers/ppa
-sudo apt install ubuntu-drivers-common
-sudo apt install nvidia-driver-440
+apt-get update && apt-get upgrade -y
 
-sudo apt-get install apt-transport-https ca-certificates curl software-properties-common glances
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository  "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable"
+add-apt-repository ppa:graphics-drivers/ppa
+apt-get install ubuntu-drivers-common
+apt-get install nvidia-driver-440
 
-sudo curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+apt-get install apt-transport-https ca-certificates curl software-properties-common glances
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository  "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable"
 
-sudo apt-get update
+curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+apt-get update
 
 wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh
 sh Anaconda3-2019.10-Linux-x86_64.sh
@@ -31,4 +33,4 @@ git clone https://github.com/Distortedlogic/theStonkMarket.git
 
 sh scripts/dl_model.sh
 
-sudo docker-compose up --build
+docker-compose up --build
