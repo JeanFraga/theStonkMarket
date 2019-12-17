@@ -38,10 +38,9 @@ RUN conda init bash && \
     conda update -q -y --all && \
     conda config -q --append channels conda-forge
 
-COPY . /home/ubuntu/app/
+COPY . /home/ubuntu/
 
-RUN cd app && \
-    conda env create -q --file environment.yml --name stonks && \
+RUN conda env create -q --file environment.yml --name stonks && \
     /bin/bash -c ". activate stonks" && \
     conda install -q -y libiconv uwsgi PyYAML && \
     python3 -m pip install --upgrade pip -q && \
