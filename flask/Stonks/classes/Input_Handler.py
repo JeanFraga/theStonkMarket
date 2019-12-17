@@ -41,7 +41,7 @@ class Input_Handler:
         with requests.get(url) as response:
             img = Image.open(io.BytesIO(response.content))
 
-        PRED_GEN_FOLDER = join(dirname(__file__), PRED_GEN_DIR, f'{to_hash(img)}')
+        PRED_GEN_FOLDER = join(PRED_GEN_DIR, f'{to_hash(img)}')
         os.makedirs(join(PRED_GEN_FOLDER, 'temp'))
         img.save(join(PRED_GEN_FOLDER, 'temp/temp.png'), format='png')
 
