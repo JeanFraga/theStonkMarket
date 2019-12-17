@@ -25,6 +25,16 @@ beautifulsoup4 == 4.8.1
 # Stonks\functions\google_imgdir_builder.py: 3
 google_images_download == 2.8.0
 
+# train.py: 12
+matplotlib == 3.1.2
+
+# Stonks\classes\Input_Handler.py: 3
+# train.py: 11
+numpy == 1.17.4
+
+# Stonks\classes\Input_Handler.py: 10
+opencv_python == 4.1.2.30
+
 # Stonks\app.py: 12
 # Stonks\classes\Input_Handler.py: 5
 # Stonks\config.py: 1
@@ -41,7 +51,9 @@ python_dotenv == 0.10.3
 # Stonks\routes\demo_url.py: 3
 requests == 2.22.0
 
-# Stonks\classes\Input_Handler.py: 10
-opencv_python == 4.1.2.30
+# Stonks\classes\Input_Handler.py: 8,9
+# train.py: 14
+tensorflow == 1.15.0
 
+psycopg2-binary==2.8.4
 lxml==4.4.2
