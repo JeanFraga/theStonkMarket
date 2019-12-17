@@ -5,8 +5,9 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES all
 ENV TF_XLA_FLAGS --tf_xla_cpu_global_jit
 
-RUN apt-get update && apt-get upgrade --fix-missing && \
-    apt-get install -q -y emacs wget bzip2 sudo \
+RUN apt-get update -q && \
+    apt-get upgrade -q -y --fix-missing && \
+    apt-get install -q -y emacs wget bzip2 sudo && \
     build-essential uwsgi-plugin-python3 python3-psycopg2
 
 RUN cp /etc/apt/sources.list /etc/apt/sources.list~ && \
