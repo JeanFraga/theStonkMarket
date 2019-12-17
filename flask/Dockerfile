@@ -39,7 +39,7 @@ RUN conda update -q conda
 RUN conda update -q --all
 RUN conda config -q --append channels conda-forge
 
-COPY . /home/ubuntu/
+COPY . /home/ubuntu/app
 
 RUN conda env create -q --file environment.yml --name stonks
 RUN /bin/bash -c ". activate stonks"
