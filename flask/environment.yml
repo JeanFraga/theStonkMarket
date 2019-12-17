@@ -5,6 +5,7 @@ channels:
 dependencies:
   - python=3.7.3
   - tensorflow-gpu==1.14
+  - psycopg2==2.8.4
   - opencv
 prefix: C:\Users\KryptoKing\Anaconda3\envs\Stonks
 
