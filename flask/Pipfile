@@ -6,8 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-flask = "==1.1.1"
-pillow = "==6.2.1"
+keras = "==2.3.1"
 beautifulsoup4 = "==4.8.1"
 matplotlib = "==3.1.2"
 numpy = "==1.17.4"
@@ -15,12 +14,14 @@ opencv-python = "==4.1.2.30"
 python-decouple = "==3.3"
 python-dotenv = "==0.10.3"
 requests = "==2.22.0"
-tensorflow-gpu = "==1.14.0"
+tensorflow = "==1.15.0"
 psycopg2-binary = "==2.8.4"
 lxml = "==4.4.2"
+Flask = "==1.1.1"
 Flask-SQLAlchemy = "==2.4.1"
-Keras = "==2.3.1"
+Pillow = "==6.2.1"
 google_images_download = "==2.8.0"
+flask-script = "*"
 
 [requires]
 python_version = "3.7"

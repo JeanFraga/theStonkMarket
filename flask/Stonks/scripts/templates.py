@@ -1,5 +1,8 @@
+from os import sys, path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+
 from bs4 import BeautifulSoup
-from Stonks.schema import DB, Template
+from schema import DB, Template
 import requests
 from multiprocessing import cpu_count, Manager, Pool
 
@@ -46,6 +49,6 @@ def build_template_db():
     templates = [Template(**meme) for meme in memes]
     DB.session.add_all(templates)
     DB.session.commit()
-    
-    return memes
-            
+
+if __name__=="__main__":
+    build_template_db()
