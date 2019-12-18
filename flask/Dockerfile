@@ -45,6 +45,6 @@ RUN conda env create -q --file environment.yml --name stonks && \
     conda install -q -y libiconv uwsgi PyYAML && \
     python3 -m pip install --upgrade pip -q && \
     python3 -m pip install -r requirements.txt -q && \
-    python3 -m pip install psycopg2
+    python3 -m pip install --no-binary :all: psycopg2
 
 CMD [ "uwsgi", "app.ini" ]
