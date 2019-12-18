@@ -69,10 +69,10 @@ class Input_Handler:
             model.load_weights(weights_path)
         except: pass
 
-        # templates = DB.session.query(Template).all()
-        # names = [template.name for template in templates]   
-        # out = names[np.argmax(model.predict_generator(PRED_GEN)[0])]
-        out = np.argmax(model.predict_generator(PRED_GEN)[0])
+        templates = DB.session.query(Template).all()
+        names = [template.name for template in templates]   
+        out = names[np.argmax(model.predict_generator(PRED_GEN)[0])]
+        # out = np.argmax(model.predict_generator(PRED_GEN)[0])
         shutil.rmtree(PRED_GEN_FOLDER)
 
 
