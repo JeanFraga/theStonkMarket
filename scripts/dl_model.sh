@@ -1,4 +1,4 @@
 pip install gdown
 cd flask/Stonks/models
-gdown -O template_clf.h5 --id 1bd2h9J2j26EZql9H4jADvXqUBevIKOSG
+gdown -O template_clf.h5 --id 13RE5UKe5GeIefLhA7kb46z-iSXulVcp4
 cd .. && cd .. && cd ..
