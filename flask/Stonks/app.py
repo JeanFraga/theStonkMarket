@@ -45,7 +45,7 @@ def create_app():
     def templates():
         return jsonify(build_template_db())
 
-
+    # @app.before_first_request(some_func)
     @app.route('/reset')
     def reset():
         DB.drop_all()
