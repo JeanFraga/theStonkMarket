@@ -8,7 +8,7 @@ ENV TF_XLA_FLAGS --tf_xla_cpu_global_jit
 RUN apt-get update -q && \
     apt-get upgrade -q -y --fix-missing && \
     apt-get install -q -y emacs wget bzip2 sudo \
-    build-essential uwsgi-plugin-python3 python3-psycopg2
+    build-essential python3-psycopg2
 
 RUN cp /etc/apt/sources.list /etc/apt/sources.list~ && \
     sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list && \
@@ -42,7 +42,7 @@ COPY . /home/ubuntu/
 
 RUN conda env create -q --file environment.yml --name stonks && \
     /bin/bash -c ". activate stonks" && \
-    conda install -q -y libiconv uwsgi PyYAML && \
+    conda install -q -y libiconv PyYAML && \
     python3 -m pip install --upgrade pip -q && \
     python3 -m pip install -r requirements.txt -q && \
     python3 -m pip install --no-binary :all: psycopg2 && \
