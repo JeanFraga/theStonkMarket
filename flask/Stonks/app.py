@@ -22,11 +22,6 @@ def create_app():
     app.register_blueprint(demo_file_bp)
     app.register_blueprint(demo_url_bp)
 
-    # with app.app_context():
-    #     DB.create_all()
-    #     from Stonks.scripts.templatedb_builder import build_template_db
-    #     build_template_db()
-
     @app.route('/')
     def redir():
         return redirect(url_for('upload'))
