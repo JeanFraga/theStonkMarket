@@ -24,7 +24,7 @@ RUN conda init bash && \
 
 RUN conda install -q -y libiconv
 RUN conda install -q -y PyYAML
-RUN conda install -q -y opencv
+RUN conda install -c conda-forge -q -y opencv
 RUN python3 -m pip install --no-binary :all: psycopg2 && \
     python3 -m pip install pyuwsgi
 RUN conda install -q -y tensorflow==1.15
