@@ -4,6 +4,7 @@ from Stonks.schema import DB
 
 
 def build_db():
+    DB.drop_all()
     DB.create_all()
     build_template_db()
 
