@@ -1,7 +1,7 @@
 from os import sys, path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
-from . import APP
+from Stonks import APP
 
 from templates import build_template_db
 from schema import DB
