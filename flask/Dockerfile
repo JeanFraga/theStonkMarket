@@ -2,7 +2,13 @@ FROM nvidia/cuda:10.2-runtime-ubuntu18.04
 
 RUN apt-get update -q && \
     apt-get upgrade -q -y && \
-    apt-get install -q -y emacs wget bzip2 sudo build-essential 
+    apt-get install -q -y emacs wget bzip2 sudo \
+    build-essential python3-psycopg2
+
+RUN cp /etc/apt/sources.list /etc/apt/sources.list~ && \
+    sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list && \
+    apt-get update -q && \
+    DEBIAN_FRONTEND=noninteractive apt-get build-dep python3-psycopg2 -y -q
 
 RUN apt-get update -q && \
     adduser --disabled-password --gecos '' ubuntu && adduser ubuntu sudo && \
