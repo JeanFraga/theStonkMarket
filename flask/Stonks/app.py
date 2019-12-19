@@ -4,10 +4,10 @@ from dotenv import load_dotenv
 
 from flask import Flask, redirect, url_for, flash, request, render_template, jsonify
 
-from schema import DB
-from routes.demo_file import demo_file_bp
-from routes.demo_url import demo_url_bp
-from config import BaseConfig
+from Stonks.schema import DB
+from Stonks.routes.demo_file import demo_file_bp
+from Stonks.routes.demo_url import demo_url_bp
+from Stonks.config import BaseConfig
 
 load_dotenv()
 
