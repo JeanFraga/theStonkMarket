@@ -1,30 +1,8 @@
 FROM nvidia/cuda:10.2-runtime-ubuntu18.04
-ENV CUDNN_VERSION=7.6.5.32 \
-    NCCL_VERSION=2.5.6 \
-    NVIDIA_VISIBLE_DEVICES=all \
-    NVIDIA_DRIVER_CAPABILITIES=all
-
-RUN apt-get update -q && \
-    apt-get upgrade -q -y --fix-missing && \
-    apt-get install -q -y emacs wget bzip2 sudo \
-    build-essential python3-psycopg2
-
-RUN cp /etc/apt/sources.list /etc/apt/sources.list~ && \
-    sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list && \
-    apt-get update -q && \
-    DEBIAN_FRONTEND=noninteractive apt-get build-dep python3-psycopg2 -y -q
-
-RUN apt-get install -y -q --no-install-recommends \
-    libcudnn7=$CUDNN_VERSION-1+cuda10.2 && \
-    apt-mark hold -q libcudnn7 && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get update -q && \
-    adduser --disabled-password --gecos '' ubuntu && adduser ubuntu sudo && \
-    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 USER ubuntu
 WORKDIR /home/ubuntu/
-RUN chmod 777 /home/ubuntu/ && mkdir app
+RUN chmod 660 /home/ubuntu/ && mkdir app
 
 RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh -q && \
     bash Anaconda3-2019.10-Linux-x86_64.sh -b > /dev/null && \
@@ -35,13 +13,12 @@ ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 RUN conda init bash && \
     /bin/bash -c ". activate" && \
     conda update -q -y --all && \
-    conda config -q --append channels conda-forge
+    conda config -q --append channels conda-forge && \
+    conda install -q -y libiconv PyYAML python=3.7.3 tensorflow-gpu==1.15 opencv
 
 COPY . /home/ubuntu/
 
-RUN conda update -q --file environment.yml && \
-    conda install -q -y libiconv PyYAML && \
-    python3 -m pip install -r requirements.txt -q && \
+RUN python3 -m pip install -r requirements.txt -q && \
     python3 -m pip install --no-binary :all: psycopg2 && \
     python3 -m pip install pyuwsgi
 
