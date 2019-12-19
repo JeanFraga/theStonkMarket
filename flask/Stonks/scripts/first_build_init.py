@@ -1,14 +1,14 @@
 from os import sys, path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
-from Stonks import APP
+from .app import create_app
 
 from templates import build_template_db
 from schema import DB
 
 
 def build_db():
-    with APP.app_context():
+    with create_app().app_context():
         DB.drop_all()
         DB.create_all()
         build_template_db()
