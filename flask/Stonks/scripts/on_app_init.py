@@ -13,7 +13,5 @@ def build_db():
 if __name__=="__main__":
     app = Flask(__name__)
     app.config.from_object(BaseConfig)
-
-    with app.app_context():
-        DB.init_app(app)
-        build_db()
+    DB.init_app(app)
+    build_db()
