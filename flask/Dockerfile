@@ -16,7 +16,7 @@ RUN apt-get update -q && \
 
 USER ubuntu
 WORKDIR /home/ubuntu/
-RUN chmod 760 /home/ubuntu/ && mkdir app
+RUN chmod 777 /home/ubuntu/ && mkdir app
 
 RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh -q && \
     bash Anaconda3-2019.10-Linux-x86_64.sh -b > /dev/null && \
