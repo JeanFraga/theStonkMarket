@@ -2,8 +2,7 @@ FROM nvidia/cuda:10.2-runtime-ubuntu18.04
 ENV CUDNN_VERSION 7.6.5.32 \
     NCCL_VERSION 2.5.6 \
     NVIDIA_VISIBLE_DEVICES all \
-    NVIDIA_DRIVER_CAPABILITIES all \
-    TF_XLA_FLAGS --tf_xla_cpu_global_jit
+    NVIDIA_DRIVER_CAPABILITIES all
 
 RUN apt-get update -q && \
     apt-get upgrade -q -y --fix-missing && \
@@ -30,21 +29,18 @@ RUN chmod 777 /home/ubuntu/ && mkdir app
 RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh -q && \
     bash Anaconda3-2019.10-Linux-x86_64.sh -b > /dev/null && \
     rm Anaconda3-2019.10-Linux-x86_64.sh
-    
+
 ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 
 RUN conda init bash && \
     /bin/bash -c ". activate" && \
-    conda update -q -y conda && \
     conda update -q -y --all && \
     conda config -q --append channels conda-forge
 
 COPY . /home/ubuntu/
 
-RUN conda env create -q --file environment.yml --name stonks && \
-    /bin/bash -c ". activate stonks" && \
+RUN conda update -q --file environment.yml && \
     conda install -q -y libiconv PyYAML && \
-    python3 -m pip install --upgrade pip -q && \
     python3 -m pip install -r requirements.txt -q && \
     python3 -m pip install --no-binary :all: psycopg2 && \
     python3 -m pip install pyuwsgi

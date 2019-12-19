@@ -1,5 +1,3 @@
-echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | tee -a /etc/sudoers
-
 apt-get update && apt-get upgrade -y
 
 add-apt-repository ppa:graphics-drivers/ppa
@@ -16,7 +14,7 @@ chmod +x /usr/local/bin/docker-compose
 apt-get update
 
 wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh
-sh Anaconda3-2019.10-Linux-x86_64.sh
+sh Anaconda3-2019.10-Linux-x86_64.sh > /dev/null
 source .bashrc
 rm Anaconda3-2019.10-Linux-x86_64.sh
 conda config --set auto_activate_base false
