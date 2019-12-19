@@ -4,7 +4,7 @@ channels:
   - defaults
 dependencies:
   - python=3.7.3
-  - tensorflow-gpu==1.15
+  - tensorflow==1.15
   - opencv
 prefix: C:\Users\KryptoKing\Anaconda3\envs\Stonks
 
