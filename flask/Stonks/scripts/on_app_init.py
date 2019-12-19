@@ -5,6 +5,7 @@ from flask import current_app as app
 
 from templates import build_template_db
 from schema import DB
+from app import create_app
 
 
 def build_db():
@@ -12,5 +13,6 @@ def build_db():
     build_template_db()
 
 if __name__=="__main__":
+    app = create_app()
     with app.app_context():
         build_db()
