@@ -29,6 +29,6 @@ mkdir theStonkMarket
 cd theStonkMarket
 git clone https://github.com/Distortedlogic/theStonkMarket.git
 
-sh scripts/dl_model.sh
+sh theStonkMarket/dl_model.sh
 
 docker-compose up --build
