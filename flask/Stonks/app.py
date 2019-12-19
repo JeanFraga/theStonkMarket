@@ -17,7 +17,6 @@ def create_app():
 
     DB.init_app(app)
 
-    app.app_context().push()
     app.register_blueprint(demo_file_bp)
     app.register_blueprint(demo_url_bp)
 
