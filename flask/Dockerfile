@@ -1,12 +1,12 @@
 FROM nvidia/cuda:10.2-runtime-ubuntu18.04
 
 RUN apt-get update -q && \
-    apt-get upgrade -q -y --fix-missing && \
+    apt-get upgrade -q -y && \
     apt-get install -q -y emacs wget bzip2 sudo build-essential 
 
 USER ubuntu
 WORKDIR /home/ubuntu/
-RUN chmod 660 /home/ubuntu/ && mkdir app
+RUN chmod 777 /home/ubuntu/ && mkdir app
 
 RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh -q && \
     bash Anaconda3-2019.10-Linux-x86_64.sh -b > /dev/null && \
