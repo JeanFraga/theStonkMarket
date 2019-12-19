@@ -25,10 +25,9 @@ conda update anaconda
 conda update --all
 conda activate
 
-mkdir theStonkMarket
-cd theStonkMarket
 git clone https://github.com/Distortedlogic/theStonkMarket.git
+cd theStonkMarket
 
-sh theStonkMarket/dl_model.sh
+sh dl_model.sh
 
 docker-compose up --build
