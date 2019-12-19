@@ -1,8 +1,8 @@
 FROM nvidia/cuda:10.2-runtime-ubuntu18.04
-ENV CUDNN_VERSION 7.6.5.32 \
-    NCCL_VERSION 2.5.6 \
-    NVIDIA_VISIBLE_DEVICES all \
-    NVIDIA_DRIVER_CAPABILITIES all
+ENV CUDNN_VERSION=7.6.5.32 \
+    NCCL_VERSION=2.5.6 \
+    NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=all
 
 RUN apt-get update -q && \
     apt-get upgrade -q -y --fix-missing && \
