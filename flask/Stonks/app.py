@@ -12,12 +12,6 @@ from Stonks.scripts import first_build_init
 
 load_dotenv()
 
-class MyFlaskApp(Flask):
-  def run(self, **kwargs):
-    with self.app_context():
-        first_build_init()
-    super(MyFlaskApp, self).run(**kwargs)
-
 def create_app():
     app = MyFlaskApp(__name__)
     app.config.from_object(BaseConfig)

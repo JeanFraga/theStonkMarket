@@ -4,6 +4,11 @@ from Stonks.scripts.templatedb_builder import build_template_db
 from Stonks.schema import DB
 from Stonks.app import create_app
 
+class MyFlaskApp(Flask):
+  def run(self, **kwargs):
+    with self.app_context():
+        first_build_init()
+    super(MyFlaskApp, self).run(**kwargs)
 
 def on_app_init():
     DB.create_all()
