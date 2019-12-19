@@ -1,9 +1,9 @@
 FROM nvidia/cuda:10.2-runtime-ubuntu18.04
-ENV CUDNN_VERSION 7.6.5.32
-ENV NCCL_VERSION 2.5.6
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES all
-ENV TF_XLA_FLAGS --tf_xla_cpu_global_jit
+ENV CUDNN_VERSION 7.6.5.32 \
+    NCCL_VERSION 2.5.6 \
+    NVIDIA_VISIBLE_DEVICES all \
+    NVIDIA_DRIVER_CAPABILITIES all \
+    TF_XLA_FLAGS --tf_xla_cpu_global_jit
 
 RUN apt-get update -q && \
     apt-get upgrade -q -y --fix-missing && \
@@ -30,6 +30,7 @@ RUN chmod 777 /home/ubuntu/ && mkdir app
 RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh -q && \
     bash Anaconda3-2019.10-Linux-x86_64.sh -b > /dev/null && \
     rm Anaconda3-2019.10-Linux-x86_64.sh
+    
 ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 
 RUN conda init bash && \
