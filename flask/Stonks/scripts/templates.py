@@ -39,14 +39,12 @@ def build_template_db():
 
         memes = []
         with Pool(cpu_count()) as pool:
-            r = pool.map_async(get_page_data, range(start_page, end_page), callback=memes.append)
+            r = pool.map_async(get_page_data, range(start_page, end_page), callback=memes.extend)
             r.wait()
 
-        memes_list += [meme for sublist in memes[0] for meme in sublist]
         start_page=end_page
-    memes = list(filter(lambda a: a != 0, memes_list))
 
-    templates = [Template(**meme) for meme in memes]
+    templates = [Template(**meme) for meme in filter(lambda a: a != 0, memes)]
     DB.session.add_all(templates)
     DB.session.commit()
 
