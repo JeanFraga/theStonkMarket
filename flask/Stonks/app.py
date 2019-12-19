@@ -8,15 +8,23 @@ from Stonks.schema import DB
 from Stonks.routes.demo_file import demo_file_bp
 from Stonks.routes.demo_url import demo_url_bp
 from Stonks.config import BaseConfig
+from Stonks.scripts import first_build_init
 
 load_dotenv()
 
+class MyFlaskApp(Flask):
+  def run(self, **kwargs):
+    with self.app_context():
+        first_build_init()
+    super(MyFlaskApp, self).run(**kwargs)
+
 def create_app():
-    app = Flask(__name__)
+    app = MyFlaskApp(__name__)
     app.config.from_object(BaseConfig)
-    
+
     DB.init_app(app)
 
+    
     app.register_blueprint(demo_file_bp)
     app.register_blueprint(demo_url_bp)
 
