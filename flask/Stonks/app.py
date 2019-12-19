@@ -15,8 +15,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(BaseConfig)
 
-    with app.app_context():
-        DB.init_app(app)
+    DB.init_app(app)
 
     app.app_context().push()
     app.register_blueprint(demo_file_bp)
