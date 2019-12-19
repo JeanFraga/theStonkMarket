@@ -22,12 +22,13 @@ RUN conda init bash && \
     /bin/bash -c ". activate" && \
     conda config -q --append channels conda-forge
 
-RUN conda install -q -y libiconv PyYAML tensorflow==1.15 opencv
+RUN conda install -q -y libiconv PyYAML opencv
+RUN python3 -m pip install --no-binary :all: psycopg2 && \
+    python3 -m pip install pyuwsgi
+RUN conda install tensorflow==1.15
 
 COPY . /home/ubuntu/
 
-RUN python3 -m pip install -r requirements.txt -q && \
-    python3 -m pip install --no-binary :all: psycopg2 && \
-    python3 -m pip install pyuwsgi
+RUN python3 -m pip install -r requirements.txt -q
 
 CMD [ "uwsgi", "app.ini" ]
