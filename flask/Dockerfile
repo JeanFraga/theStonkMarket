@@ -21,7 +21,8 @@ ENV PATH /home/ubuntu/anaconda3/bin:$PATH
 RUN conda init bash && \
     /bin/bash -c ". activate" && \
     conda config -q --append channels conda-forge && \
-    conda install -q -y libiconv PyYAML python=3.7.3 tensorflow-gpu==1.15 opencv
+    conda install -q -y libiconv PyYAML tensorflow-gpu==1.15 opencv && \
+    conda install -q -y python=3.7.3
 
 COPY . /home/ubuntu/
 
