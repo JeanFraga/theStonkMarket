@@ -20,10 +20,10 @@ def get_meme_data(memes):
 def get_page_data(page_number):
     with requests.get(IMG_FLIP_URI.format(page_number)) as imgflip_page:
         soup = BeautifulSoup(imgflip_page.text, 'lxml')
-
-    return soup
     
     meme_containers = soup.find_all('div', class_='mt-box')
+
+    return type(meme_containers)
 
     if meme_containers: return meme_containers
     else: return [0]
