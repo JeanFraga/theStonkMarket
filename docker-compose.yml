@@ -3,7 +3,6 @@ version: '3.7'
 services:
     flask:
         build: ./flask
-        command: bash -c "python Stonks/scripts/first_build_init.py"
         container_name: flask
         restart: always
         env_file:

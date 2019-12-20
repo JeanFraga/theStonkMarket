@@ -9,7 +9,6 @@ from PIL.ImageOps import fit
 from Stonks.schema import DB, Template
 
 num_workers = cpu_count()
-
 num_names = 20
 
 google_agrs = {
@@ -29,8 +28,7 @@ def parse_data(doc):
         current_name = ''
         for line in doc.split('\n'):
             if 'Item name' in line:
-                name = line.split('=')[1].replace('\n', '')[1:]
-                current_name = name
+                current_name = line.split('=')[1].replace('\n', '')[1:]
             if 'Image URL' in line:
                 url = line.split(':')[1].replace(' ', '') + ':' + line.split(':')[2].replace('\n', '')
                 lines.append([url, current_name])
@@ -44,9 +42,8 @@ def search_google(name):
         f = io.StringIO()
         with redirect_stdout(f):
             google.download(google_agrs)
-        out = f.getvalue()
             
-        return parse_data(out)
+        return parse_data(f.getvalue())
     except Exception as e: return str(e)
 
 def download_img(data):
