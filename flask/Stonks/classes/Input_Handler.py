@@ -1,5 +1,6 @@
 import io, os, hashlib, requests, json, shutil
 import numpy as np
+from os.path import join, dirname
 from decouple import config
 from PIL import Image
 from cv2 import cv2
@@ -8,7 +9,10 @@ from Stonks.schema import DB, Template
 from tensorflow_core.keras.models import load_model
 from tensorflow_core.keras.preprocessing import image
 from tensorflow_core.keras.preprocessing.image import ImageDataGenerator
-from os.path import join, dirname
+from tensorflow_core.keras import applications
+from tensorflow_core.keras.models import Sequential, load_model
+from tensorflow_core.keras.layers import Dense
+
 
 # constants
 PRED_GEN_DIR = 'pred_gen_dir'
@@ -17,10 +21,7 @@ weights_path = "Stonks/models/template_clf.h5"
 def to_hash(img):
    return hashlib.md5(img.tobytes()).hexdigest()
 
-import os
-from tensorflow_core.keras import applications
-from tensorflow_core.keras.models import Sequential, load_model
-from tensorflow_core.keras.layers import Dense
+
 from Stonks.functions.constants import DATASET_PATH
 
 img_height = 224

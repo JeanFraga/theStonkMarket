@@ -8,16 +8,15 @@ from Stonks.schema import DB
 from Stonks.routes.demo_file import demo_file_bp
 from Stonks.routes.demo_url import demo_url_bp
 from Stonks.config import BaseConfig
-from Stonks.scripts import first_build_init
+from Stonks.scripts.first_build_init import build_db
 
 load_dotenv()
 
 def create_app():
-    app = MyFlaskApp(__name__)
+    app = Flask(__name__)
     app.config.from_object(BaseConfig)
 
     DB.init_app(app)
-
     
     app.register_blueprint(demo_file_bp)
     app.register_blueprint(demo_url_bp)
@@ -25,6 +24,11 @@ def create_app():
     @app.route('/')
     def redir():
         return redirect(url_for('upload'))
+
+    @app.route('/reset')
+    def reset():
+        
+        return jsonify(build_db())
 
     @app.route('/upload')
     def upload():
