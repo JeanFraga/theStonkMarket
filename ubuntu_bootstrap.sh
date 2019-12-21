@@ -3,6 +3,7 @@ apt-get update && apt-get upgrade -y
 add-apt-repository ppa:graphics-drivers/ppa
 apt-get install ubuntu-drivers-common
 apt-get install nvidia-driver-440
+watch -d -n 0.5 nvidia-smi
 
 apt-get install apt-transport-https ca-certificates curl software-properties-common glances
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
