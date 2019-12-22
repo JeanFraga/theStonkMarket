@@ -67,9 +67,6 @@ requests == 2.22.0
 # Stonks\classes\Input_Handler.py: 13,14
 tensorflow == 1.15.0
 
-# train.py: 15
-tensorflow_gpu == 1.14.0
-
 # Stonks\classes\reddit_scrapper.py: 3
 tqdm == 4.41.0
 
