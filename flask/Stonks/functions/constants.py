@@ -1,4 +1,5 @@
 from multiprocessing import cpu_count
+from decouple import config
 
 DATASET_PATH = 'Stonks/databases/dataset'
 DEBUG_REDDIT = True
