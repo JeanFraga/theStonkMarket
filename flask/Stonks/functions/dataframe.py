@@ -3,7 +3,7 @@ from numpy import log, e
 from statistics import stdev
 from time import time
 
-def get_score_df(df):
+def score_df(df):
     scoring = df[df['author']!='None']
 
     top_1percent = scoring[scoring['upvotes'] > scoring['upvotes'].quantile(0.99)]

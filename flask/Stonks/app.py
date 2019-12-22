@@ -9,6 +9,7 @@ from Stonks.routes.demo_url import demo_url_bp
 from Stonks.config import BaseConfig
 from Stonks.scripts.first_build_init import build_db
 from Stonks.scripts.google_imgdir_builder import build_google_imgdir
+from Stonks.classes.reddit_scrapper import RedditScrapper
 
 def create_app():
     app = Flask(__name__)
@@ -26,6 +27,10 @@ def create_app():
     @app.route('/reset')
     def reset():
         return jsonify(build_db())
+
+    @app.route('/reddit')
+    def reddit():
+        return jsonify(RedditScrapper('dankmemes').get_score_df())
 
     @app.route('/google')
     def google():

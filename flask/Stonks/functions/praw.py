@@ -2,11 +2,10 @@ from datetime import datetime
 
 def extract_data(submission):
     return {
-        "id": submission.id,
+        "reddit_id": submission.id,
         "title": submission.title,
         "author": str(submission.author),
         "timestamp": submission.created_utc,
-        "datetime": datetime.fromtimestamp(submission.created_utc).isoformat(),
         "year": datetime.fromtimestamp(submission.created_utc).year,
         "month": datetime.fromtimestamp(submission.created_utc).month,
         "day": datetime.fromtimestamp(submission.created_utc).day,
