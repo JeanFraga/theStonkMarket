@@ -85,7 +85,7 @@ class RedditScrapper:
         DB.session.query(Current_Month.timestamp < (now - MONTH_TD)).delete()
 
     def get_score_df(self, top=None):
-        # self.update_current_month()
+        self.update_current_month()
         df = score_df(pd.read_sql(
             DB.session.query(Current_Month).statement,
             DB.session.bind)
