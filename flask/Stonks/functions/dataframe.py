@@ -47,14 +47,14 @@ def score_df(df):
     now = int(time())
 
     return pd.DataFrame({
+        'author': authors,
         'final_score': final_scores,
         'raw_score': raw_scores,
-        'author': authors,
-        'num_memes_in_bottom': num_memes_in_bottom_filled,
-        'num_memes_in_top': [num_memes_in_top[author] for author in authors],
-        'spammer_index': [scores_dict[author]['spammer_index'] for author in authors],
+        'num_in_bottom': num_memes_in_bottom_filled,
+        'num_in_top': [num_memes_in_top[author] for author in authors],
+        'shitposter_index': [scores_dict[author]['spammer_index'] for author in authors],
         'highest_upvotes': [highest_upvotes[author] for author in authors],
-        'highest_upvotes_score': [scores_dict[author]['highest_upvotes_score'] for author in authors],
+        'hu_score': [scores_dict[author]['highest_upvotes_score'] for author in authors],
         'lowest_ratio': [scores_dict[author]['lowest_ratio'] for author in authors],
-        'timstamp': [now]*len(authors)
-    }).sort_values('final_score', ascending=False).reset_index(drop=True)
+        'timestamp': [now]*len(authors)
+    }).sort_values('final_score', ascending=False).reset_index(drop=True).round(decimals=2)
