@@ -17,12 +17,14 @@ from Stonks.functions.constants import (
     FILE_TYPES,
     NUM_WORKERS,
     DAY_TD,
-    DEBUG_REDDIT
+    DEBUG_REDDIT,
+    REDDIT_LOG_PATH,
+    INFO_LOG_PATH
 )
 
 import logging
-reddit_bug_logger = setup_logger(__name__, 'Stonks/logs/reddit_debug.log', level=logging.DEBUG)
-info_logger = setup_logger(__name__, 'Stonks/logs/INFO.log', level=logging.INFO)
+reddit_bug_logger = setup_logger(__name__, REDDIT_LOG_PATH, level=logging.DEBUG)
+info_logger = setup_logger(__name__, INFO_LOG_PATH, level=logging.INFO)
 
 def initializer():
     global reddit
@@ -83,7 +85,7 @@ class RedditScrapper:
         DB.session.query(Current_Month.timestamp < (now - MONTH_TD)).delete()
 
     def get_score_df(self, top=None):
-        # self.update_current_month()
+        self.update_current_month()
         df = score_df(pd.read_sql(
             DB.session.query(Current_Month).statement,
             DB.session.bind)
