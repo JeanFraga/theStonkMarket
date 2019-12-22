@@ -1,41 +1,32 @@
 from datetime import datetime
-from tinydb import TinyDB
-from multiprocessing import Manager, Pool, current_process
+from multiprocessing import Pool, current_process
 from tqdm import tqdm
-from time import time
+from time import time, mktime
+import pandas as pd
+import matplotlib.pyplot as plt
+import json
 
-from functions.dataframe import get_score_df
-from functions.pushshift import query_pushshift
-from functions.praw import extract_data
-from functions.misc import setup_logger, init_reddit, check_isDeleted
-from functions.workerdb_compilers import insert_new_data, clear_worker_dbs
-from functions.sql import (get_max_timestamp,
-                            check_table_exists,
-                            table_prep,
-                            get_time_range,
-                            get_scoring_df,
-                            remove_duplicates,
-                            del_over_month_old)
-from functions.constants import (MONTH_TD,
-                                WORKER_DB_URI,
-                                FILE_TYPES,
-                                NUM_WORKERS,
-                                DAY_TD,
-                                DEBUG_REDDIT)
+from Stonks.schema import Current_Month, DB
 
+from Stonks.functions.dataframe import score_df
+from Stonks.functions.pushshift import query_pushshift
+from Stonks.functions.praw import extract_data
+from Stonks.functions.misc import setup_logger, init_reddit, check_isDeleted
+from Stonks.functions.constants import (
+    MONTH_TD,
+    FILE_TYPES,
+    NUM_WORKERS,
+    DAY_TD,
+    DEBUG_REDDIT
+)
 
 import logging
-reddit_bug_logger = setup_logger(__name__, 'logs/reddit_debug.log', level=logging.DEBUG)
-info_logger = setup_logger(__name__, 'logs/INFO.log', level=logging.INFO)
-
-# global functions for multiprocessing  #####################################################
+reddit_bug_logger = setup_logger(__name__, 'Stonks/logs/reddit_debug.log', level=logging.DEBUG)
+info_logger = setup_logger(__name__, 'Stonks/logs/INFO.log', level=logging.INFO)
 
 def initializer():
-    global worker_db
     global reddit
-
     worker_id = (int(current_process().name.split("-", 1)[1])-1) % NUM_WORKERS
-    worker_db = TinyDB(WORKER_DB_URI.format(worker_id))
 
     while True:
         try:
@@ -49,86 +40,111 @@ def praw_by_id(submission_id):
     try:
         submission = reddit.submission(id=submission_id)
         if not submission.stickied:
-            data = extract_data(submission)
-            if any(submission.url.endswith(filetype) for filetype in FILE_TYPES): worker_db.insert(data)
+            if any(submission.url.endswith(filetype) for filetype in FILE_TYPES):
+                return extract_data(submission)
     except Exception as e:
         if DEBUG_REDDIT: reddit_bug_logger.debug(e)
 
 class RedditScrapper:
-    def __init__(self):
-        self.scrapped = 0
-
-# handle subreddits #####################################################
-
-    def set_current_subreddit(self, subreddit):
+    def __init__(self, subreddit, verbose=True):
         self.current_subreddit = subreddit
+        self.verbose = verbose
 
-    def _subreddit_list_iterator(self):
-        for subreddit in self.subreddit_list: yield subreddit
-
-    def set_subreddit_list(self, subreddit_list):
-        self.subreddit_list = subreddit_list
-        self.subreddit_generator = self._subreddit_list_iterator()
-        self.current_subreddit = next(self.subreddit_generator)
-
-    def next_subreddit(self):
-        self.current_subreddit = next(self.subreddit_generator)
-
-# engines #####################################################
-
-    def engine(self, start_at, end_at):
-        post_ids = query_pushshift(self.current_subreddit, start_at, end_at)
+    def engine(self, start_time, end_time):
+        post_ids = query_pushshift(self.current_subreddit, start_time, end_time)
         with Pool(NUM_WORKERS, initializer) as workers:
-            list(tqdm(workers.imap_unordered(praw_by_id, post_ids), total=len(post_ids)))
-        self.scrapped += len(post_ids)
+            data_list = list(tqdm(workers.imap_unordered(praw_by_id, post_ids), total=len(post_ids)))
 
-    def feed_engine_daily_chunks(self, table, current_ts, end_at, verbose=True):
-        now = int(time())
-        clear_worker_dbs()
+        DB.session.add_all([Current_Month(**data) for data in data_list if data])
+        DB.session.commit()
 
-        while current_ts < end_at:
-            start_at = current_ts
-            current_ts = min(start_at + DAY_TD, end_at, now)
+        info_logger.info(f'{len(data_list)} data points have been gathered in runtime so far.')
+        if self.verbose: print(f'\n{len(data_list)} data points have been gathered in runtime so far.\n')
 
-            self.engine(start_at, current_ts)
-            insert_new_data(table)
-            clear_worker_dbs()
 
-            info_logger.info(f'{self.scrapped} data points have been gathered in runtime so far.')
-            if verbose: print(f'\n{self.scrapped} data points have been gathered in runtime so far.\n')
-        remove_duplicates(table)
-
-# scrapping #####################################################
-
-    def scoringdb_update(self):
-        table = f'{self.current_subreddit}_scoring'
+    def feed_engine_daily_chunks(self, current_ts, end_time):
         now = int(time())
 
-        if table_prep(table):
+        while current_ts < end_time:
+            start_time = current_ts
+            current_ts = min(start_time + DAY_TD, end_time, now)
+
+            self.engine(start_time, current_ts)
+
+    def update_current_month(self):
+        now = int(time())
+        current_ts = DB.session.query(DB.func.max(Current_Month.timestamp)).scalar()
+
+        if not current_ts:
             current_ts = now - MONTH_TD
-            self.feed_engine_daily_chunks(table, current_ts, now)
-        else:
-            current_ts = get_max_timestamp(table)
-            if not current_ts:
-                current_ts = now - MONTH_TD
-            self.feed_engine_daily_chunks(table, current_ts, now)
-            del_over_month_old(table)
 
-    def scrap_month(self, year, month, verbose=True):
-        table = f'{self.current_subreddit}_{year}_{month}'
+        self.feed_engine_daily_chunks(current_ts, now)
 
-        table_prep(table)
-        current_ts, next_month = get_time_range(table, year, month)
+        DB.session.query(Current_Month.timestamp < (now - MONTH_TD)).delete()
 
-        self.feed_engine_daily_chunks(table, current_ts, next_month)
-        if verbose: print(f'month {month} completed\n')
+    def get_score_df(self, top=None):
+        # self.update_current_month()
+        df = score_df(pd.read_sql(
+            DB.session.query(Current_Month).statement,
+            DB.session.bind)
+        ).iloc[:5, :].drop(columns=['timestamp'])
 
-# loading #####################################################
+        fig, ax = plt.subplots()
+        ax.axis('off')
+        ax.axis('tight')
 
-    def get_scoring_data(self, update=True):
-        if update: self.scoringdb_update()
-        wanted_cols = ['day', 'author', 'upvotes', 'downvotes', 'upvote_ratio', 'num_comments']
-        return get_scoring_df(self.current_subreddit, wanted_cols)
+        table = ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center')
+        table.auto_set_font_size(False)
+        table.set_fontsize(14)
 
-    def get_latest_scores(self):
-        return get_score_df(self.get_scoring_data())
+        # cells = table._cells
+        # for cell in table._cells:
+        #     if cell[0] == 0:
+        #         table._cells[cell].set_fontsize(10)
+
+        fig.set_size_inches(18,7)
+        fig.tight_layout()
+
+        plt.savefig(
+            'Stonks/assets/reddit_scores.png',
+            transparent = True,
+            bbox_inches = 'tight', 
+            pad_inches = 0,
+            dpi = 200
+        )
+
+        return json.loads(df.to_json(orient='table', index=False))["data"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def get_time_range(table, year, month, day=1, hour=0, minute=0):
+    dt = datetime(year=year, month=month, day=day, hour=hour, minute=minute)
+    fresh_month_ts = mktime(dt.timetuple())
+
+    max_db_time = get_max_timestamp(table)
+    if not max_db_time:
+        max_db_time = fresh_month_ts
+
+    if month == 12:
+        next_month = 1
+        year += 1
+    else:
+        next_month = month+1
+
+    dt = datetime(year=year, month=next_month, day=day, hour=hour, minute=minute)
+    next_month_ts = mktime(dt.timetuple())
+
+    return max_db_time, next_month_ts

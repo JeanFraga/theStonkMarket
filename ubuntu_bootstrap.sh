@@ -26,6 +26,14 @@ conda update anaconda
 conda update --all
 conda activate
 
+add-apt-repository universe
+add-apt-repository ppa:certbot/certbot
+apt-get update
+apt-get install python-certbot-nginx
+
+cerbot --nginx
+certbot renew --dry-run
+
 git clone https://github.com/Distortedlogic/theStonkMarket.git
 cd theStonkMarket
 

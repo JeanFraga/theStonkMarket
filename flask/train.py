@@ -52,6 +52,7 @@ if __name__ == "__main__":
     config = tf.ConfigProto()
     config.gpu_options.allow_growth=True
     sess = tf.Session(config=config)
+    
     train_datagen = ImageDataGenerator(
         rescale=1./255,
         shear_range=0.2,
