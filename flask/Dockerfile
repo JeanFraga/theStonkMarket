@@ -34,7 +34,7 @@ RUN python3 -m pip install --no-binary :all: psycopg2 && \
     Keras==2.3.1 Pillow==6.2.1 beautifulsoup4==4.8.1 google_images_download==2.8.0 \
     matplotlib==3.1.2 numpy==1.17.4 opencv_python==4.1.2.30 python_decouple==3.3 \
     python_dotenv==0.10.3 requests==2.22.0 tensorflow==1.15.0 psycopg2-binary==2.8.4 \
-    lxml==4.4.2 praw == 6.4.0
+    lxml==4.4.2 praw==6.4.0 pandas==0.25.3
 
 COPY . /home/ubuntu/
 
