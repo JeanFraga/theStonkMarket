@@ -1,14 +1,14 @@
 from datetime import datetime
 from multiprocessing import Pool, current_process
 from tqdm import tqdm
-from time import time, mktime
+from time import time
 import pandas as pd
 import matplotlib.pyplot as plt
-import json
+import json, logging
 
 from Stonks.schema import Current_Month, DB
 
-from Stonks.functions.dataframe import score_df
+from Stonks.functions.dataframe import score_df, save_table_img
 from Stonks.functions.pushshift import query_pushshift
 from Stonks.functions.praw import extract_data
 from Stonks.functions.misc import setup_logger, init_reddit, check_isDeleted
@@ -22,7 +22,6 @@ from Stonks.functions.constants import (
     INFO_LOG_PATH
 )
 
-import logging
 reddit_bug_logger = setup_logger(__name__, REDDIT_LOG_PATH, level=logging.DEBUG)
 info_logger = setup_logger(__name__, INFO_LOG_PATH, level=logging.INFO)
 
@@ -91,62 +90,6 @@ class RedditScrapper:
             DB.session.bind)
         ).iloc[:5, :].drop(columns=['timestamp'])
 
-        fig, ax = plt.subplots()
-        ax.axis('off')
-        ax.axis('tight')
-
-        table = ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center')
-        table.auto_set_font_size(False)
-        table.set_fontsize(14)
-
-        # cells = table._cells
-        # for cell in table._cells:
-        #     if cell[0] == 0:
-        #         table._cells[cell].set_fontsize(10)
-
-        fig.set_size_inches(18,7)
-        fig.tight_layout()
-
-        plt.savefig(
-            'Stonks/assets/reddit_scores.png',
-            transparent = True,
-            bbox_inches = 'tight', 
-            pad_inches = 0,
-            dpi = 200
-        )
+        save_table_img(df)
 
         return json.loads(df.to_json(orient='table', index=False))["data"]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def get_time_range(table, year, month, day=1, hour=0, minute=0):
-    dt = datetime(year=year, month=month, day=day, hour=hour, minute=minute)
-    fresh_month_ts = mktime(dt.timetuple())
-
-    max_db_time = get_max_timestamp(table)
-    if not max_db_time:
-        max_db_time = fresh_month_ts
-
-    if month == 12:
-        next_month = 1
-        year += 1
-    else:
-        next_month = month+1
-
-    dt = datetime(year=year, month=next_month, day=day, hour=hour, minute=minute)
-    next_month_ts = mktime(dt.timetuple())
-
-    return max_db_time, next_month_ts
