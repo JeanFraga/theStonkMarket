@@ -36,6 +36,7 @@ certbot renew --dry-run
 git clone https://github.com/Distortedlogic/theStonkMarket.git
 cd theStonkMarket
 
-sh dl_model.sh
+pip install gdown
+gdown -O flask/Stonks/models/template_clf.h5 --id 13RE5UKe5GeIefLhA7kb46z-iSXulVcp4
 
 docker-compose up --build
