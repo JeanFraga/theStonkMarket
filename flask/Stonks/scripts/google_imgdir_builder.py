@@ -24,16 +24,16 @@ def initializer():
 
 def parse_data(doc):
     try:
-        lines = []
+        memes = []
         current_name = ''
         for line in doc.split('\n'):
             if 'Item name' in line:
                 current_name = line.split('=')[1].replace('\n', '')[1:]
             if 'Image URL' in line:
                 url = line.split(':')[1].replace(' ', '') + ':' + line.split(':')[2].replace('\n', '')
-                lines.append([url, current_name])
+                memes.append([url, current_name])
 
-        return lines
+        return memes
     except Exception as e: return str(e)
 
 def search_google(name):
@@ -46,15 +46,15 @@ def search_google(name):
         return parse_data(f.getvalue())
     except Exception as e: return str(e)
 
-def download_img(data):
-    url, name = data
+def download_img(meme_data):
+    url, name = meme_data
     
     try:
-        with requests.get(url) as raw:
-            raw_img = Image.open(io.BytesIO(raw.content))
+        with requests.get(url) as response:
+            raw_img = Image.open(io.BytesIO(response.content))
     except: pass
     else:
-        # img = fit(raw_img, (224, 224), Image.ANTIALIAS)
+        img = fit(raw_img, (224, 224), Image.ANTIALIAS)
         img = raw_img.convert('RGB')
         img_hash = hashlib.md5(img.tobytes()).hexdigest()
         output_filename = os.path.join(DATASET_PATH, f"{name}", f"{img_hash}.png")
@@ -65,8 +65,8 @@ def download_img(data):
     
 
 def engine(name):
-    for meme in search_google(name):
-        download_img(meme)
+    for meme_data in search_google(name):
+        download_img(meme_data)
 
 
 def build_google_imgdir():
