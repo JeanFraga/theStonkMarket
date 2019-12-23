@@ -29,21 +29,20 @@ def get_page_data(page_number):
 
 def build_template_db():
     start_page = 1
-    step_size = 32
+    step_size = cpu_count()
     meme_data = []
 
     while [0] not in meme_data:
         end_page = start_page+step_size
 
         with Pool(cpu_count()) as pool:
-            r = pool.map_async(get_page_data, range(start_page, end_page), callback=meme_data.extend)
-            r.wait()
+            a = pool.map_async(get_page_data, range(start_page, end_page), callback=meme_data.extend)
+            a.wait()
 
         start_page=end_page
 
     meme_gen = filter(lambda a: a != 0, itertools.chain.from_iterable(meme_data))
-    templates = [Template(**meme) for meme in meme_gen]
-    DB.session.add_all(templates)
+    DB.session.add_all(map(lambda meme: Template(**meme), meme_gen))
     DB.session.commit()
 
     return list(filter(lambda a: a != 0, itertools.chain.from_iterable(meme_data)))

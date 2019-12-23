@@ -58,3 +58,28 @@ def score_df(df):
         'lowest_ratio': [scores_dict[author]['lowest_ratio'] for author in authors],
         'timestamp': [now]*len(authors)
     }).sort_values('final_score', ascending=False).reset_index(drop=True).round(decimals=2)
+
+def save_table_img(df):
+    fig, ax = plt.subplots()
+    ax.axis('off')
+    ax.axis('tight')
+
+    table = ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center')
+    table.auto_set_font_size(False)
+    table.set_fontsize(14)
+
+    # cells = table._cells
+    # for cell in table._cells:
+    #     if cell[0] == 0:
+    #         table._cells[cell].set_fontsize(10)
+
+    fig.set_size_inches(18,7)
+    fig.tight_layout()
+
+    plt.savefig(
+        'Stonks/assets/reddit_scores.png',
+        transparent = True,
+        bbox_inches = 'tight', 
+        pad_inches = 0,
+        dpi = 200
+    )

@@ -22,11 +22,13 @@ def setup_logger(name, log_file, level=logging.INFO):
 def init_reddit(id):
     env_var_key = 'reddit_oauth_'+str(id)
     reddit_oauth = loads(environ[env_var_key])
-    return Reddit(client_id=reddit_oauth['CLIENT_ID'],
-                    client_secret=reddit_oauth['CLIENT_SECRET'],
-                    password=reddit_oauth['PASSWORD'],
-                    user_agent=reddit_oauth['USERAGENT'],
-                    username=reddit_oauth['USERNAME'])
+    return Reddit(
+        client_id=reddit_oauth['CLIENT_ID'],
+        client_secret=reddit_oauth['CLIENT_SECRET'],
+        password=reddit_oauth['PASSWORD'],
+        user_agent=reddit_oauth['USERAGENT'],
+        username=reddit_oauth['USERNAME']
+    )
 
 def check_isDeleted(output_filename):
     deleted = cv2.imread('assets/deleted_img/image404.png')
